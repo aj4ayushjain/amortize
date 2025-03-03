@@ -1,0 +1,2 @@
+# amortize
+Simple Amortization Calculator
