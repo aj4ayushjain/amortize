@@ -16,8 +16,25 @@ export default function AmortizationCalculator() {
   };
 
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/,/g, "");
-    setLoanAmount(value);
+    const value = e.target.value.replace(/,/g, ""); // Remove commas
+    if (/^\d*$/.test(value)) {
+      setLoanAmount(value);
+    }
+  };
+  
+
+  const handleInterestRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) { // Allows numbers and one decimal
+      setInterestRate(value);
+    }
+  };
+  
+  const handleLoanTenureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) { // Only allows whole numbers (no decimals)
+      setLoanTenure(value);
+    }
   };
   
   const calculateEMI = () => {
@@ -63,15 +80,15 @@ export default function AmortizationCalculator() {
               </div>
               <div>
                 <Label className="block text-sm font-medium">Interest Rate (% per annum)</Label>
-                <Input type="number" value={interestRate} onChange={(e) => setInterestRate(e.target.value)} placeholder="Eg. 7.5" className="mt-1" />
+                <Input type="number" value={interestRate} onChange={handleInterestRateChange} placeholder="Eg. 7.5" className="mt-1" />
               </div>
               <div>
                 <Label className="block text-sm font-medium">Loan Tenure (Years)</Label>
-                <Input type="number" value={loanTenure} onChange={(e) => setLoanTenure(e.target.value)} placeholder="Eg. 20" className="mt-1" />
+                <Input type="number" value={loanTenure} onChange={handleLoanTenureChange} placeholder="Eg. 20" className="mt-1" />
               </div>
               <div className="flex space-x-4">
                 <Button variant="default" onClick={calculateEMI} className="w-1/2 text-lg py-2 !bg-black !text-white hover:!bg-gray-900 ">Calculate EMI</Button>
-                <Button variant="secondary" onClick={resetCalculator} className="w-1/2 text-lg py-2">Reset</Button>
+                <Button variant="secondary" onClick={resetCalculator} className="w-1/2 text-lg bg-gray-200 text-black hover:bg-gray-300 py-2">Reset</Button>
               </div>
             </div>
           </CardContent>
