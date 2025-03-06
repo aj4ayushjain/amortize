@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from "@vercel/analytics/react"
 
 
 export default function AmortizationCalculator() {
@@ -129,6 +130,7 @@ export default function AmortizationCalculator() {
       )}
 
       </div>
+    <Analytics/>
     <SpeedInsights/>
     </div>
   );
