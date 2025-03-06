@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
+import { SpeedInsights } from '@vercel/speed-insights/react';
+
 
 export default function AmortizationCalculator() {
   const [loanAmount, setLoanAmount] = useState<string>("");
@@ -127,6 +129,7 @@ export default function AmortizationCalculator() {
       )}
 
       </div>
+    <SpeedInsights/>
     </div>
   );
 }
