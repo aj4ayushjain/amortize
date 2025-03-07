@@ -16,4 +16,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    minify: 'terser', // 'terser' if you need better optimization
+    rollupOptions: {
+      treeshake: true,
+    },
+  },
 })
