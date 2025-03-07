@@ -73,6 +73,10 @@ export default function AmortizationCalculator() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="max-w-2xl mx-auto p-6 space-y-6 just">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-center sm:text-4xl md:text-5xl">Loan Amortization Calculator</h1>
+          <p className="text-gray-600 mt-2">Easily calculate your EMI, total interest, and loan repayment schedule.</p>
+        </div>
         <Card className="shadow-lg rounded-lg">
           <CardContent className="p-6 space-y-4">
             <h2 className="text-2xl font-semibold text-center">Loan Amortization Calculator</h2>
