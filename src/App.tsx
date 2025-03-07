@@ -95,9 +95,7 @@ export default function AmortizationCalculator() {
               </div>
             </div>
           </CardContent>
-        </Card>
-        {schedule.length > 0 && (
-        <Card className="shadow-lg rounded-lg">
+          {schedule.length > 0 && (
           <CardContent className="p-4">
             <h3 className="text-lg font-semibold text-center mb-3">Amortization Schedule</h3>
 
@@ -126,9 +124,9 @@ export default function AmortizationCalculator() {
               </Table>
             </div>
           </CardContent>
+        )}
         </Card>
-      )}
-
+        
       </div>
     <Analytics/>
     <SpeedInsights/>
