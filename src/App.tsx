@@ -72,66 +72,67 @@ export default function AmortizationCalculator() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="max-w-2xl mx-auto p-6 space-y-6 just">
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-center sm:text-4xl md:text-5xl">Loan Amortization Calculator</h1>
           <p className="text-gray-600 mt-2">Easily calculate your EMI, total interest, and loan repayment schedule.</p>
         </div>
-        <Card className="shadow-lg rounded-lg">
-          <CardContent className="p-6 space-y-4">
-            <h2 className="text-2xl font-semibold text-center">Loan Amortization Calculator</h2>
-            <div className="space-y-4">
-              <div>
-                <Label className="block text-sm font-medium">Loan Amount</Label>
-                <Input type="text" value={formatNumber(loanAmount)} onChange={handleLoanAmountChange} placeholder="Eg. 50,000" className="mt-1" />
+        <div className="flex justify-center">
+          <Card className="shadow-lg rounded-lg w-full max-w-2xl">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-2xl font-semibold text-center">Loan Amortization Calculator</h2>
+              <div className="space-y-4">
+                <div>
+                  <Label className="block text-sm font-medium">Loan Amount</Label>
+                  <Input type="text" value={formatNumber(loanAmount)} onChange={handleLoanAmountChange} placeholder="Eg. 50,000" className="mt-1" />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium">Interest Rate (% per annum)</Label>
+                  <Input type="number" value={interestRate} onChange={handleInterestRateChange} placeholder="Eg. 7.5" className="mt-1" />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium">Loan Tenure (Years)</Label>
+                  <Input type="number" value={loanTenure} onChange={handleLoanTenureChange} placeholder="Eg. 20" className="mt-1" />
+                </div>
+                <div className="flex space-x-4">
+                  <Button variant="default" onClick={calculateEMI} className="w-1/2 text-lg py-2 !bg-black !text-white hover:!bg-gray-900 ">Calculate EMI</Button>
+                  <Button variant="secondary" onClick={resetCalculator} className="w-1/2 text-lg bg-gray-200 text-black hover:bg-gray-300 py-2">Reset</Button>
+                </div>
               </div>
-              <div>
-                <Label className="block text-sm font-medium">Interest Rate (% per annum)</Label>
-                <Input type="number" value={interestRate} onChange={handleInterestRateChange} placeholder="Eg. 7.5" className="mt-1" />
-              </div>
-              <div>
-                <Label className="block text-sm font-medium">Loan Tenure (Years)</Label>
-                <Input type="number" value={loanTenure} onChange={handleLoanTenureChange} placeholder="Eg. 20" className="mt-1" />
-              </div>
-              <div className="flex space-x-4">
-                <Button variant="default" onClick={calculateEMI} className="w-1/2 text-lg py-2 !bg-black !text-white hover:!bg-gray-900 ">Calculate EMI</Button>
-                <Button variant="secondary" onClick={resetCalculator} className="w-1/2 text-lg bg-gray-200 text-black hover:bg-gray-300 py-2">Reset</Button>
-              </div>
-            </div>
-          </CardContent>
-          {schedule.length > 0 && (
-          <CardContent className="p-4">
-            <h3 className="text-lg font-semibold text-center mb-3">Amortization Schedule</h3>
+            </CardContent>
+            {schedule.length > 0 && (
+            <CardContent className="p-4">
+              <h3 className="text-lg font-semibold text-center mb-3">Amortization Schedule</h3>
 
-            <div className="overflow-x-auto max-h-96 max-w-800">
-              <Table className="w-full border border-gray-300">
-                <TableHeader className="sticky top-0 bg-gray-200 text-gray-700 border-b border-gray-400">
-                  <TableRow>
-                    <TableHead className="p-2 text-center">Month</TableHead>
-                    <TableHead className="p-2 text-right">EMI</TableHead>
-                    <TableHead className="p-2 text-right">Principal</TableHead>
-                    <TableHead className="p-2 text-right">Interest</TableHead>
-                    <TableHead className="p-2 text-right">Balance</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {schedule.map((row, index) => (
-                    <TableRow key={row.month} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                      <TableCell className="p-2 text-center">{row.month}</TableCell>
-                      <TableCell className="p-2 text-right">{row.emi}</TableCell>
-                      <TableCell className="p-2 text-right">{row.principal}</TableCell>
-                      <TableCell className="p-2 text-right">{row.interest}</TableCell>
-                      <TableCell className="p-2 text-right">{row.balance}</TableCell>
+              <div className="overflow-x-auto max-h-96 max-w-800">
+                <Table className="w-full border border-gray-300">
+                  <TableHeader className="sticky top-0 bg-gray-200 text-gray-700 border-b border-gray-400">
+                    <TableRow>
+                      <TableHead className="p-2 text-center">Month</TableHead>
+                      <TableHead className="p-2 text-right">EMI</TableHead>
+                      <TableHead className="p-2 text-right">Principal</TableHead>
+                      <TableHead className="p-2 text-right">Interest</TableHead>
+                      <TableHead className="p-2 text-right">Balance</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        )}
-        </Card>
-        
-      </div>
+                  </TableHeader>
+                  <TableBody>
+                    {schedule.map((row, index) => (
+                      <TableRow key={row.month} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                        <TableCell className="p-2 text-center">{row.month}</TableCell>
+                        <TableCell className="p-2 text-right">{row.emi}</TableCell>
+                        <TableCell className="p-2 text-right">{row.principal}</TableCell>
+                        <TableCell className="p-2 text-right">{row.interest}</TableCell>
+                        <TableCell className="p-2 text-right">{row.balance}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          )}
+          </Card>
+        </div>     
+      </div> 
     <Analytics/>
     <SpeedInsights/>
     </div>
