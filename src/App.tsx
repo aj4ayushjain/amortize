@@ -6,7 +6,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Label } from "@/components/ui/label";
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from "@vercel/analytics/react"
-
+import AmortizationInfo from "@/components/ui/info";
 
 export default function AmortizationCalculator() {
   const [loanAmount, setLoanAmount] = useState<string>("");
@@ -132,6 +132,7 @@ export default function AmortizationCalculator() {
           )}
           </Card>
         </div>     
+        <AmortizationInfo/>
       </div> 
     <Analytics/>
     <SpeedInsights/>
