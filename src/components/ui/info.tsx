@@ -69,7 +69,7 @@ export default function AmortizationInfo() {
                   The amortization formula calculates your fixed monthly payment based on the principal amount, interest
                   rate, and loan term. This payment remains constant throughout the loan term (for fixed-rate loans).
                 </p>
-                <p className="mt-3">The formula for calculating the monthly payment (EMI) is:</p>
+                <p className="mt-3">The formula for calculating the EMI installments is:</p>
               </div>
               <div className="p-4 bg-muted rounded-md text-center">
                 <p className="font-mono">EMI = P × r × (1 + r)ⁿ ÷ [(1 + r)ⁿ - 1]</p>
@@ -203,7 +203,7 @@ export default function AmortizationInfo() {
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                       <li>Making extra payments toward the principal</li>
                       <li>Refinancing your loan with different terms</li>
-                      <li>Requesting a loan modification from your lender</li>
+                      <li>Requesting a loan modification from lender</li>
                       <li>Switching from a 30-year to a 15-year loan (or vice versa)</li>
                     </ul>
                     <p className="mt-2">
