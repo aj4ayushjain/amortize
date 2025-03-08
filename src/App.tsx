@@ -1,74 +1,74 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
-import { SpeedInsights } from '@vercel/speed-insights/react';
+import { useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
+import { Label } from "@/components/ui/label"
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Analytics } from "@vercel/analytics/react"
-import AmortizationInfo from "@/components/ui/info";
+import AmortizationInfo from "@/components/ui/info"
 
 export default function AmortizationCalculator() {
-  const [loanAmount, setLoanAmount] = useState<string>("");
-  const [interestRate, setInterestRate] = useState<string>("");
-  const [loanTenure, setLoanTenure] = useState<string>("");
-  const [schedule, setSchedule] = useState<Array<{ month: number; emi: string; principal: string; interest: string; balance: string }>>([]);
+  const [loanAmount, setLoanAmount] = useState<string>("")
+  const [interestRate, setInterestRate] = useState<string>("")
+  const [loanTenure, setLoanTenure] = useState<string>("")
+  const [schedule, setSchedule] = useState<Array<{ month: number; emi: string; principal: string; interest: string; balance: string }>>([])
   
   const formatNumber = (num: string) => {
-    return num ? new Intl.NumberFormat("en-IN").format(Number(num)) : "";
-  };
+    return num ? new Intl.NumberFormat("en-IN").format(Number(num)) : ""
+  }
 
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/,/g, ""); // Remove commas
+    const value = e.target.value.replace(/,/g, "") // Remove commas
     if (/^\d*$/.test(value)) {
-      setLoanAmount(value);
+      setLoanAmount(value)
     }
-  };
+  }
   
 
   const handleInterestRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (/^\d*\.?\d*$/.test(value)) { // Allows numbers and one decimal
-      setInterestRate(value);
+      setInterestRate(value)
     }
-  };
+  }
   
   const handleLoanTenureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (/^\d*$/.test(value)) { // Only allows whole numbers (no decimals)
-      setLoanTenure(value);
+      setLoanTenure(value)
     }
-  };
+  }
   
   const calculateEMI = () => {
-    const principal = parseFloat(loanAmount);
-    const rate = parseFloat(interestRate);
-    const tenure = parseFloat(loanTenure);
-    if (isNaN(principal) || isNaN(rate) || isNaN(tenure) || principal <= 0 || rate <= 0 || tenure <= 0) return;
+    const principal = parseFloat(loanAmount)
+    const rate = parseFloat(interestRate)
+    const tenure = parseFloat(loanTenure)
+    if (isNaN(principal) || isNaN(rate) || isNaN(tenure) || principal <= 0 || rate <= 0 || tenure <= 0) return
     
-    const monthlyRate = rate / 100 / 12;
-    const numPayments = tenure * 12;
+    const monthlyRate = rate / 100 / 12
+    const numPayments = tenure * 12
     const emi =
       (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
-      (Math.pow(1 + monthlyRate, numPayments) - 1);
+      (Math.pow(1 + monthlyRate, numPayments) - 1)
 
-    let balance = principal;
-    let newSchedule = [];
+    let balance = principal
+    let newSchedule = []
     for (let i = 1; i <= numPayments; i++) {
-      let interest = balance * monthlyRate;
-      let principalPayment = emi - interest;
-      balance -= principalPayment;
-      newSchedule.push({ month: i, emi: emi.toFixed(2), principal: principalPayment.toFixed(2), interest: interest.toFixed(2), balance: balance.toFixed(2) });
+      let interest = balance * monthlyRate
+      let principalPayment = emi - interest
+      balance -= principalPayment
+      newSchedule.push({ month: i, emi: emi.toFixed(2), principal: principalPayment.toFixed(2), interest: interest.toFixed(2), balance: balance.toFixed(2) })
     }
-    setSchedule(newSchedule);
-  };
+    setSchedule(newSchedule)
+  }
 
   const resetCalculator = () => {
-    setLoanAmount("");
-    setInterestRate("");
-    setLoanTenure("");
-    setSchedule([]);
-  };
+    setLoanAmount("")
+    setInterestRate("")
+    setLoanTenure("")
+    setSchedule([])
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
