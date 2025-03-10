@@ -14,6 +14,33 @@ export default function AmortizationCalculator() {
   const [loanTenure, setLoanTenure] = useState<string>("")
   const [schedule, setSchedule] = useState<Array<{ month: number; emi: string; principal: string; interest: string; balance: string }>>([])
   
+
+  const [errors, setErrors] = useState<{
+    loanAmount?: string
+    interestRate?: string
+    loanTenure?: string
+  }>({})
+
+
+  const validateInputs = () => {
+    let isValid = true
+    let newErrors = {}
+    if (!loanAmount || parseFloat(loanAmount) <= 0) {
+      newErrors = { ...newErrors, loanAmount: "Please enter a valid loan amount" }
+      isValid = false
+    }
+    if (!interestRate || parseFloat(interestRate) <= 0) {
+      newErrors = { ...newErrors, interestRate: "Please enter a valid interest rate" }
+      isValid = false
+    }
+    if (!loanTenure || parseFloat(loanTenure) <= 0) {
+      newErrors = { ...newErrors, loanTenure: "Please enter a valid loan tenure" }
+      isValid = false
+    }
+    setErrors(newErrors)
+    return isValid
+  }
+
   const formatNumber = (num: string) => {
     return num ? new Intl.NumberFormat("en-IN").format(Number(num)) : ""
   }
@@ -22,6 +49,7 @@ export default function AmortizationCalculator() {
     const value = e.target.value.replace(/,/g, "") // Remove commas
     if (/^\d*$/.test(value)) {
       setLoanAmount(value)
+      setErrors({ ...errors, loanAmount: "" })
     }
   }
   
@@ -30,6 +58,7 @@ export default function AmortizationCalculator() {
     const value = e.target.value
     if (/^\d*\.?\d*$/.test(value)) { // Allows numbers and one decimal
       setInterestRate(value)
+      setErrors({ ...errors, interestRate: "" })
     }
   }
   
@@ -37,10 +66,14 @@ export default function AmortizationCalculator() {
     const value = e.target.value
     if (/^\d*$/.test(value)) { // Only allows whole numbers (no decimals)
       setLoanTenure(value)
+      setErrors({ ...errors, loanTenure: "" })
     }
   }
   
   const calculateEMI = () => {
+
+    if (!validateInputs()) return
+
     const principal = parseFloat(loanAmount)
     const rate = parseFloat(interestRate)
     const tenure = parseFloat(loanTenure)
@@ -68,6 +101,7 @@ export default function AmortizationCalculator() {
     setInterestRate("")
     setLoanTenure("")
     setSchedule([])
+    setErrors({})
   }
 
   return (
@@ -85,14 +119,17 @@ export default function AmortizationCalculator() {
                 <div>
                   <Label className="block text-sm font-medium">Loan Amount</Label>
                   <Input type="text" value={formatNumber(loanAmount)} onChange={handleLoanAmountChange} placeholder="Eg. 50,000" className="mt-1" />
+                  {errors.loanAmount && <p className="text-red-500 text-sm mt-1">{errors.loanAmount}</p>}
                 </div>
                 <div>
                   <Label className="block text-sm font-medium">Interest Rate (% per annum)</Label>
                   <Input type="number" value={interestRate} onChange={handleInterestRateChange} placeholder="Eg. 7.5" className="mt-1" />
+                  {errors.interestRate && <p className="text-red-500 text-sm mt-1">{errors.interestRate}</p>}
                 </div>
                 <div>
                   <Label className="block text-sm font-medium">Loan Tenure (Years)</Label>
                   <Input type="number" value={loanTenure} onChange={handleLoanTenureChange} placeholder="Eg. 20" className="mt-1" />
+                  {errors.loanTenure && <p className="text-red-500 text-sm mt-1">{errors.loanTenure}</p>}
                 </div>
                 <div className="flex space-x-4">
                   <Button variant="default" onClick={calculateEMI} className="w-1/2 text-lg py-2 !bg-black !text-white hover:!bg-gray-900 ">Calculate EMI</Button>
