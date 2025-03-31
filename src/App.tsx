@@ -4,11 +4,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import { SpeedInsights } from '@vercel/speed-insights/react'
-import { Analytics } from "@vercel/analytics/react"
 import AmortizationInfo from "@/components/ui/info"
+import { Routes, Route } from "react-router-dom"
 
-export default function AmortizationCalculator() {
+function AmortizationCalculator() {
   const [loanAmount, setLoanAmount] = useState<string>("")
   const [interestRate, setInterestRate] = useState<string>("")
   const [loanTenure, setLoanTenure] = useState<string>("")
@@ -105,61 +104,116 @@ export default function AmortizationCalculator() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <main className="container mx-auto px-4 py-6 pt-20 max-w-6xl">
+      <div className="space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-center sm:text-4xl md:text-5xl">Loan Amortization Calculator</h1>
-          <p className="text-gray-600 mt-2">Easily calculate your EMI, total interest, and loan repayment schedule.</p>
+          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+            Loan Amortization Calculator
+          </h1>
+          <p className="text-gray-600 mt-4 text-sm sm:text-base">
+            Calculate your EMI, total interest, and view detailed loan repayment schedule
+          </p>
         </div>
-        <div className="flex justify-center">
-          <Card className="shadow-lg rounded-lg w-full max-w-2xl">
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-2xl font-semibold text-center">Loan Amortization Calculator</h2>
-              <div className="space-y-4">
-                <div>
-                  <Label className="block text-sm font-medium">Loan Amount</Label>
-                  <Input type="text" value={formatNumber(loanAmount)} onChange={handleLoanAmountChange} placeholder="Eg. 50,000" className="mt-1" />
-                  {errors.loanAmount && <p className="text-red-500 text-sm mt-1">{errors.loanAmount}</p>}
-                </div>
-                <div>
-                  <Label className="block text-sm font-medium">Interest Rate (% per annum)</Label>
-                  <Input type="number" value={interestRate} onChange={handleInterestRateChange} placeholder="Eg. 7.5" className="mt-1" />
-                  {errors.interestRate && <p className="text-red-500 text-sm mt-1">{errors.interestRate}</p>}
-                </div>
-                <div>
-                  <Label className="block text-sm font-medium">Loan Tenure (Years)</Label>
-                  <Input type="number" value={loanTenure} onChange={handleLoanTenureChange} placeholder="Eg. 20" className="mt-1" />
-                  {errors.loanTenure && <p className="text-red-500 text-sm mt-1">{errors.loanTenure}</p>}
-                </div>
-                <div className="flex space-x-4">
-                  <Button variant="default" onClick={calculateEMI} className="w-1/2 text-lg py-2 !bg-black !text-white hover:!bg-gray-900 ">Calculate EMI</Button>
-                  <Button variant="secondary" onClick={resetCalculator} className="w-1/2 text-lg bg-gray-200 text-black hover:bg-gray-300 py-2">Reset</Button>
-                </div>
+        
+        <Card className="shadow-lg rounded-lg">
+          <CardContent className="p-4 sm:p-6 space-y-6">
+            <form onSubmit={(e) => { e.preventDefault(); calculateEMI(); }} className="space-y-4">
+              <div>
+                <Label htmlFor="loanAmount" className="block text-sm font-medium">Loan Amount</Label>
+                <Input 
+                  id="loanAmount"
+                  type="text" 
+                  value={formatNumber(loanAmount)} 
+                  onChange={handleLoanAmountChange} 
+                  placeholder="Eg. 50,000" 
+                  className="mt-1 w-full"
+                  aria-label="Loan Amount"
+                  aria-describedby="loanAmount-error"
+                />
+                {errors.loanAmount && (
+                  <p id="loanAmount-error" className="text-red-500 text-sm mt-1" role="alert">
+                    {errors.loanAmount}
+                  </p>
+                )}
               </div>
-            </CardContent>
-            {schedule.length > 0 && (
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold text-center mb-3">Amortization Schedule</h3>
-
-              <div className="overflow-x-auto max-h-96 max-w-800">
-                <Table className="w-full border border-gray-300">
-                  <TableHeader className="sticky top-0 bg-gray-200 text-gray-700 border-b border-gray-400">
+              <div>
+                <Label htmlFor="interestRate" className="block text-sm font-medium">Interest Rate (% per annum)</Label>
+                <Input 
+                  id="interestRate"
+                  type="number" 
+                  value={interestRate} 
+                  onChange={handleInterestRateChange} 
+                  placeholder="Eg. 7.5" 
+                  className="mt-1 w-full"
+                  aria-label="Interest Rate"
+                  aria-describedby="interestRate-error"
+                />
+                {errors.interestRate && (
+                  <p id="interestRate-error" className="text-red-500 text-sm mt-1" role="alert">
+                    {errors.interestRate}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="loanTenure" className="block text-sm font-medium">Loan Tenure (Years)</Label>
+                <Input 
+                  id="loanTenure"
+                  type="number" 
+                  value={loanTenure} 
+                  onChange={handleLoanTenureChange} 
+                  placeholder="Eg. 20" 
+                  className="mt-1 w-full"
+                  aria-label="Loan Tenure"
+                  aria-describedby="loanTenure-error"
+                />
+                {errors.loanTenure && (
+                  <p id="loanTenure-error" className="text-red-500 text-sm mt-1" role="alert">
+                    {errors.loanTenure}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pt-2">
+                <Button 
+                  type="submit"
+                  variant="default" 
+                  className="w-full sm:w-1/2 text-base sm:text-lg py-2 !bg-black !text-white hover:!bg-gray-900"
+                >
+                  Calculate EMI
+                </Button>
+                <Button 
+                  type="button"
+                  variant="secondary" 
+                  onClick={resetCalculator} 
+                  className="w-full sm:w-1/2 text-base sm:text-lg bg-gray-200 text-black hover:bg-gray-300 py-2"
+                >
+                  Reset
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+          
+          {schedule.length > 0 && (
+            <CardContent className="border-t p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-center mb-4">Amortization Schedule</h2>
+              <div className="overflow-x-auto max-h-[calc(100vh-24rem)]">
+                <Table className="w-full border border-gray-200 text-sm sm:text-base">
+                  <TableHeader className="sticky top-0 bg-gray-100">
                     <TableRow>
-                      <TableHead className="p-2 text-center">Month</TableHead>
-                      <TableHead className="p-2 text-right">EMI</TableHead>
-                      <TableHead className="p-2 text-right">Principal</TableHead>
-                      <TableHead className="p-2 text-right">Interest</TableHead>
-                      <TableHead className="p-2 text-right">Balance</TableHead>
+                      <TableHead className="p-2 sm:p-3 text-center">Month</TableHead>
+                      <TableHead className="p-2 sm:p-3 text-right">EMI</TableHead>
+                      <TableHead className="p-2 sm:p-3 text-right">Principal</TableHead>
+                      <TableHead className="p-2 sm:p-3 text-right">Interest</TableHead>
+                      <TableHead className="p-2 sm:p-3 text-right">Balance</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {schedule.map((row, index) => (
                       <TableRow key={row.month} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                        <TableCell className="p-2 text-center">{row.month}</TableCell>
-                        <TableCell className="p-2 text-right">{row.emi}</TableCell>
-                        <TableCell className="p-2 text-right">{row.principal}</TableCell>
-                        <TableCell className="p-2 text-right">{row.interest}</TableCell>
-                        <TableCell className="p-2 text-right">{row.balance}</TableCell>
+                        <TableCell className="p-2 sm:p-3 text-center">{row.month}</TableCell>
+                        <TableCell className="p-2 sm:p-3 text-right">{row.emi}</TableCell>
+                        <TableCell className="p-2 sm:p-3 text-right">{row.principal}</TableCell>
+                        <TableCell className="p-2 sm:p-3 text-right">{row.interest}</TableCell>
+                        <TableCell className="p-2 sm:p-3 text-right">{row.balance}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -167,15 +221,32 @@ export default function AmortizationCalculator() {
               </div>
             </CardContent>
           )}
-          </Card>
-        </div>     
-        <AmortizationInfo/>
-      </div> 
-    <Analytics/>
-    <SpeedInsights/>
-    </div>
+        </Card>
+        
+        <div className="mt-8">
+          <AmortizationInfo />
+        </div>
+      </div>
+    </main>
   );
 }
 
+function Blog() {
+  return (
+    <main className="container mx-auto px-4 py-6 pt-20 max-w-6xl">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Blog</h1>
+      <p className="text-gray-600 text-sm sm:text-base">Blog content coming soon...</p>
+    </main>
+  );
+}
 
-
+export default function App() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Routes>
+        <Route path="/" element={<AmortizationCalculator />} />
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
+    </div>
+  );
+}
