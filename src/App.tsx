@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
 import AmortizationInfo from "@/components/ui/info"
+import { BlogList } from "@/components/blog/BlogList"
+import { BlogPost } from "@/components/blog/BlogPost"
 import { Routes, Route } from "react-router-dom"
 
 function AmortizationCalculator() {
@@ -234,8 +236,8 @@ function AmortizationCalculator() {
 function Blog() {
   return (
     <main className="container mx-auto px-4 py-6 pt-20 max-w-6xl">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Blog</h1>
-      <p className="text-gray-600 text-sm sm:text-base">Blog content coming soon...</p>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-8">Blog</h1>
+      <BlogList />
     </main>
   );
 }
@@ -246,6 +248,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<AmortizationCalculator />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
       </Routes>
     </div>
   );
