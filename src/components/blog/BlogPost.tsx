@@ -3,9 +3,10 @@ import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { BlogPost as BlogPostType } from '../../types/blog';
-import { MockBlogService } from '../../services/blog';
 
-const blogService = new MockBlogService();
+import { getBlogService } from '../../services/BlogServiceFactory';
+
+const blogService = getBlogService();
 
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();

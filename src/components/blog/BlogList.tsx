@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BlogPost } from '../../types/blog';
-import { MockBlogService } from '../../services/blog';
-
-const blogService = new MockBlogService();
+import { getBlogService } from '../../services/BlogServiceFactory';
+const blogService = getBlogService();
 
 export function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
