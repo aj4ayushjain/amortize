@@ -13,7 +13,6 @@ export default sanityClient;
 
 const builder = imageUrlBuilder(sanityClient);
 
-console.log('Sanity Image builder:', builder);
 export function urlFor(source: any) {
   return builder.image(source);
 }
