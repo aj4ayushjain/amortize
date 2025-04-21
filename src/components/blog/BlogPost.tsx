@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { BlogPost as BlogPostType } from '../../types/blog';
+import { PortableText } from '@portabletext/react';
 
 import { getBlogService } from '../../services/BlogServiceFactory';
-
 const blogService = getBlogService();
+
+
+
 
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -14,7 +15,7 @@ export function BlogPost() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPost = async () => {
+      const fetchPost = async () => {
       if (!slug) return;
       
       try {
@@ -83,35 +84,41 @@ export function BlogPost() {
         </header>
 
         <div className="prose prose-lg max-w-none">
-          <ReactMarkdown 
-            remarkPlugins={[remarkGfm]}
-            components={{
-              h1: ({node, ...props}) => <h1 className="text-3xl font-bold mb-6 text-gray-900" {...props} />,
-              h2: ({node, ...props}) => <h2 className="text-2xl font-semibold mb-4 mt-8 text-gray-800" {...props} />,
-              h3: ({node, ...props}) => <h3 className="text-xl font-semibold mb-3 mt-6 text-gray-800" {...props} />,
-              p: ({node, ...props}) => <p className="mb-4 text-gray-700 leading-relaxed" {...props} />,
-              ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 text-gray-700" {...props} />,
-              ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 text-gray-700" {...props} />,
-              li: ({node, ...props}) => <li className="mb-2" {...props} />,
-              strong: ({node, ...props}) => <strong className="font-semibold text-gray-900" {...props} />,
-              blockquote: ({node, ...props}) => (
-                <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-gray-600" {...props} />
-              ),
-            }}
-          >
-            {post.content}
-          </ReactMarkdown>
+          
+            <PortableText value={post.body} components={{
+              block: {
+                h1: ({ children }) => <h1 className="text-2xl font-bold text-gray-900 mb-4">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-xl font-semibold text-gray-800 mb-3">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-lg font-semibold text-gray-700 mb-2">{children}</h3>,
+                p: ({ children }) => <p className="text-gray-600 mb-4">{children}</p>,
+                ul: ({ children }) => <ul className="list-disc list-inside mb-4">{children}</ul>,
+                li: ({ children }) => <li className="text-gray-600 mb-2">{children}</li>,
+              },
+              list: {
+                bullet: ({ children }) => <ul className="list-disc list-inside mb-4">{children}</ul>,
+                number: ({ children }) => <ol className="list-decimal list-inside mb-4">{children}</ol>,
+              },
+              marks: {
+                strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                em: ({ children }) => <em className="italic text-gray-700">{children}</em>,
+                link: ({ value, children }) => (
+                  <a href={value.href} className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
+                    {children}
+                  </a>
+                ),
+              },
+            }} />
         </div>
 
-        {post.tags && (
+        {post.categories && (
           <div className="mt-8 pt-6 border-t border-gray-200">
             <div className="flex flex-wrap gap-2">
-              {post.tags.map(tag => (
+              {post.categories.map(category => (
                 <span
-                  key={tag}
+                  key={category.title}
                   className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
                 >
-                  {tag}
+                  {category.title}
                 </span>
               ))}
             </div>

@@ -1,4 +1,5 @@
 import { createClient } from '@sanity/client';
+import imageUrlBuilder from '@sanity/image-url';
 
 const sanityClient = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || '', // Fetch from .env
@@ -8,3 +9,11 @@ const sanityClient = createClient({
 });
 
 export default sanityClient;
+
+
+const builder = imageUrlBuilder(sanityClient);
+
+console.log('Sanity Image builder:', builder);
+export function urlFor(source: any) {
+  return builder.image(source);
+}

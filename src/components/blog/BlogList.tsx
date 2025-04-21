@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BlogPost } from '../../types/blog';
 import { getBlogService } from '../../services/BlogServiceFactory';
+import { urlFor } from '../../services/sanityClient';
+
 const blogService = getBlogService();
 
 export function BlogList() {
@@ -41,14 +43,14 @@ export function BlogList() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {posts.map((post) => (
         <article 
-          key={post.id} 
+            key={post._id} 
           className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
         >
-          <Link to={`/blog/${post.slug}`} className="block">
-            {post.featuredImage ? (
+          <Link to={`/blog/${post.slug?.current}`} className="block">
+            {post.mainImage ? (
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={post.featuredImage}
+                  src={post.mainImage._upload?.previewImage}
                   alt={post.title}
                   className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
                 />
@@ -74,12 +76,7 @@ export function BlogList() {
             <div className="p-4">
               <h2 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-primary">
                 {post.title}
-              </h2>
-              {post.excerpt && (
-                <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                  {post.excerpt}
-                </p>
-              )}
+                </h2>
                 <div className="flex flex-col text-sm text-gray-500">
                 <span className="font-medium text-gray-700">{post.author?.name}</span>
                 <time>
@@ -90,19 +87,6 @@ export function BlogList() {
                   })}
                 </time>
                 </div>
-              
-              {post.tags && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {post.tags.slice(0, 3).map(tag => (
-                    <span
-                      key={tag}
-                      className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
           </Link>
         </article>

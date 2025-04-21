@@ -8,8 +8,10 @@ export interface BlogService {
 }
 
 // Temporary mock implementation - can be replaced with actual CMS integration
+/** 
 export class MockBlogService implements BlogService {
   private mockPosts: BlogPost[] = [
+  /**   
     {
       id: '1',
       slug: 'understanding-mortgage-amortization',
@@ -53,7 +55,7 @@ Visit our calculator to start planning your mortgage payments today!`,
       status: 'published',
       tags: ['mortgage', 'finance', 'guide', 'basics'],
     }
-    /**{
+    {
       id: '2',
       slug: 'early-mortgage-payoff-strategies',
       title: '5 Effective Strategies for Early Mortgage Payoff',
@@ -142,7 +144,6 @@ Use our calculator to compare different scenarios and find what works best for y
       status: 'published',
       tags: ['mortgage', 'comparison', 'finance', 'planning'],
     }
-      */
   ];
 
   async getPosts(page: number, pageSize: number): Promise<BlogListResponse> {
@@ -171,24 +172,24 @@ Use our calculator to compare different scenarios and find what works best for y
 
 }
 
+*/
+
 // CMS integration - Sanity
 export class SanityBlogService implements BlogService {
   async getPosts(page: number, pageSize: number): Promise<BlogListResponse> {
     const start = (page - 1) * pageSize;
     const posts = await sanityClient.fetch(
-      `*[_type == "blogPost"] | order(publishedAt desc) [${start}...${start + pageSize}] {
+      `*[_type == "post"] | order(publishedAt desc) [${start}...${start + pageSize}] {
         _id,
         title,
         slug,
-        featuredImage,
-        content,
-        excerpt,
+        mainImage,
+        body,
         publishedAt,
-        tags
       }`
     );
 
-    const total = await sanityClient.fetch('count(*[_type == "blogPost"])');
+    const total = await sanityClient.fetch('count(*[_type == "post"])');
 
     return {
       posts,
@@ -199,32 +200,38 @@ export class SanityBlogService implements BlogService {
   }
 
   async getPostBySlug(slug: string): Promise<BlogPost | null> {
-    return await sanityClient.fetch(
-      `*[_type == "blogPost" && slug.current == $slug][0] {
-        _id,
-        title,
-        slug,
-        featuredImage,
-        content,
-        excerpt,
-        publishedAt,
-        tags
-      }`,
+    const post = await sanityClient.fetch(
+        `*[_type == "post" && slug.current == $slug][0] {
+          _id,  
+          title,
+          slug->{current},
+          mainImage,
+          publishedAt,
+          author->{name},
+          categories[]->{title},
+          body[]{
+            ...,
+            children[]{
+              ...,
+            }
+          }
+
+          }`,
       { slug }
     );
+    console.log('Post:', post);
+    return post;
   }
 
   async searchPosts(query: string): Promise<BlogPost[]> {
     return await sanityClient.fetch(
-      `*[_type == "blogPost" && (title match $query || content match $query)] {
+      `*[_type == "post" && (title match $query || content match $query)] {
         _id,
         title,
         slug,
-        featuredImage,
-        content,
-        excerpt,
+        mainImage,
+        body,
         publishedAt,
-        tags
       }`,
       { query: `*${query}*` as never }
     );
