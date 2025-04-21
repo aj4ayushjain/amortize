@@ -34,14 +34,10 @@ export interface BlogPost {
     }[];
   }[];
   mainImage?: {
-    _upload?: {
-      previewImage: string; // base64 string
-      file: {
-        name: string; // URL to the image
-        type: string;
-      };
-    }
-    
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
   }; 
   author?: Author;
   publishedAt: string;
