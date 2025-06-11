@@ -49,6 +49,8 @@ export interface BlogPost {
     title: string;
   }[];
   status: 'draft' | 'published';
+  meta_title?: string;
+  meta_description?: string;
   seo?: {
     title?: string;
     description?: string;

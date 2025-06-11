@@ -60,7 +60,8 @@ export function BlogPost() {
 
   return (
     <>
-      <title>{post.title}</title>
+      <title>{post.meta_title || post.title}</title>
+      <meta name="description" content={post.meta_description || 'Read our latest blog post.'} />
       <div className="container mx-auto px-4 py-6 pt-20 max-w-4xl">
         <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
         <header className="mb-8">

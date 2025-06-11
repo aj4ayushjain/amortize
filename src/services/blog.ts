@@ -214,8 +214,9 @@ export class SanityBlogService implements BlogService {
             children[]{
               ...,
             }
-          }
-
+          },
+          meta_title,
+          meta_description,
           }`,
       { slug }
     );
