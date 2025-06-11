@@ -59,8 +59,10 @@ export function BlogPost() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 pt-20 max-w-4xl">
-      <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+    <>
+      <title>{post.title}</title>
+      <div className="container mx-auto px-4 py-6 pt-20 max-w-4xl">
+        <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
         <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {post.title}
@@ -126,5 +128,6 @@ export function BlogPost() {
         )}
       </article>
     </div>
+    </>
   );
 }
