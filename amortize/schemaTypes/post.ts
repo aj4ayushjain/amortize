@@ -11,6 +11,21 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'meta_title',
+      title: 'Meta Title(SEO)',
+      type: 'string',
+      description: 'Used for SEO purposes',
+      validation: (Rule) => Rule.max(60).warning('Meta title should be less than 60 characters.'),
+    }),
+    defineField({
+      name: 'meta_description',
+      title: 'Meta Description',
+      type: 'text',
+      description: 'Used for SEO purposes',
+      validation: (Rule) => Rule.max(160).warning('Meta description should be less than 160 characters.'),
+    }),
+
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
