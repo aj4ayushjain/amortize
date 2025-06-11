@@ -4,6 +4,7 @@ import { BlogPost as BlogPostType } from '../../types/blog';
 import { PortableText } from '@portabletext/react';
 
 import { getBlogService } from '../../services/BlogServiceFactory';
+import { urlFor } from '@/services/sanityClient';
 const blogService = getBlogService();
 
 
@@ -85,7 +86,17 @@ export function BlogPost() {
             
           </div>
         </header>
+          {post.mainImage && (
+            <div className="mb-6">
+              <img
+                src={urlFor(post.mainImage.asset).url()}
+                alt={post.title}
+                className="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          )}
 
+            
         <div className="prose prose-lg max-w-none">
           
             <PortableText value={post.body} components={{
