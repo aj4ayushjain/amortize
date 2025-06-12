@@ -46,6 +46,11 @@ function AmortizationCalculator() {
     return num ? new Intl.NumberFormat("en-IN").format(Number(num)) : ""
   }
 
+  const formatDisplayNumber = (num: number) => {
+
+    return num ? new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(num) : ""
+  }
+
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, "") // Remove commas
     if (/^\d*$/.test(value)) {
@@ -92,7 +97,11 @@ function AmortizationCalculator() {
       let interest = balance * monthlyRate
       let principalPayment = emi - interest
       balance -= principalPayment
-      newSchedule.push({ month: i, emi: emi.toFixed(2), principal: principalPayment.toFixed(2), interest: interest.toFixed(2), balance: balance.toFixed(2) })
+      newSchedule.push({ month: i, 
+                         emi: formatDisplayNumber(emi), 
+                         principal: formatDisplayNumber(principalPayment),
+                        interest: formatDisplayNumber(interest),
+                         balance: formatDisplayNumber(balance) })
     }
     setSchedule(newSchedule)
   }
