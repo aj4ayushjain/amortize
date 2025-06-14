@@ -38,6 +38,11 @@ function AmortizationCalculator() {
       newErrors = { ...newErrors, loanTenure: "Please enter a valid loan tenure" }
       isValid = false
     }
+    if (!loanTenure || parseFloat(loanAmount) >= 100) {
+      // Assuming loan tenure is in years, this checks if it's over 100 years
+      newErrors = { ...newErrors, loanTenure: "Loan tenure over 100? Time travel not supported." }
+      isValid = false
+    }
     setErrors(newErrors)
     return isValid
   }
