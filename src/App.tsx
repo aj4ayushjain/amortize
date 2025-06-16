@@ -8,6 +8,7 @@ import AmortizationInfo from "@/components/ui/info"
 import { BlogList } from "@/components/blog/BlogList"
 import { BlogPost } from "@/components/blog/BlogPost"
 import { Routes, Route } from "react-router-dom"
+import { downloadAmortizationExcel } from "@/services/scheduleExcel"
 
 function AmortizationCalculator() {
   const [loanAmount, setLoanAmount] = useState<string>("")
@@ -211,6 +212,13 @@ function AmortizationCalculator() {
           {schedule.length > 0 && (
             <CardContent className="border-t p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-semibold text-center mb-4">Amortization Schedule</h2>
+              <Button 
+                  type ="button" 
+                  variant="outline" 
+                  className="mb-4" 
+                  onClick={() => downloadAmortizationExcel(schedule)}>
+                Download Excel
+              </Button>
               <div className="overflow-x-auto max-h-[calc(100vh-24rem)]">
                 <Table className="w-full border border-gray-200 text-sm sm:text-base">
                   <TableHeader className="sticky top-0 bg-gray-100">
