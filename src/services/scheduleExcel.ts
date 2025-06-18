@@ -22,6 +22,23 @@ export const downloadAmortizationExcel = async (schedule: ScheduleItem[]) => {
     { header: "Balance", key: "balance", width: 15 },
   ];
 
+  // Set the Header Row 
+  worksheet.getRow(1).font = {bold: true}; // Bold
+  worksheet.getRow(1).alignment = { horizontal: 'center' }; // Center alignment
+  worksheet.getRow(1).border = {
+    top: { style: 'thin' },
+    left: { style: 'thin' },
+    bottom: { style: 'thin' },
+    right: { style: 'thin' },
+  };
+  // Set background color for header row  till the end of the row
+  worksheet.getRow(1).fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '98FB98' }, // Light gray background
+};
+
+
   // Add rows
   schedule.forEach((row) => {
     worksheet.addRow({
@@ -29,7 +46,7 @@ export const downloadAmortizationExcel = async (schedule: ScheduleItem[]) => {
       emi: parseFloat(row.emi.replace(/,/g, "") ),
       principal: parseFloat(row.principal.replace(/,/g, "") ),
       interest: parseFloat(row.interest.replace(/,/g, "") ),
-      balance: parseFloat(row.balance.replace(/,/g, "") ),
+      balance: parseFloat(row.balance.replace(/,/g, "") ),  
     });
   });
 
