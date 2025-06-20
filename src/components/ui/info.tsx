@@ -5,11 +5,15 @@ import { Calculator, HelpCircle, Info, TrendingDown, TrendingUp } from "lucide-r
 export default function AmortizationInfo() {
   return (
     <div className="space-y-12 bg-gray-100" itemScope itemType="https://schema.org/HowTo">
+
       <meta itemProp="name" content="How to understand loan amortization" />
       <meta
         itemProp="description"
         content="Learn how loan amortization works and how to calculate your loan payments"
       />
+      
+      <br />
+      <br />  
 
       <section id="what-is-amortization" aria-labelledby="what-is-heading">
         <div className="flex items-center gap-2 mb-4">
