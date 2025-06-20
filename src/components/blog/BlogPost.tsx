@@ -62,7 +62,7 @@ export function BlogPost() {
   return (
     <>
       <title>{post.meta_title || post.title}</title>
-      <link rel="canonical" href={`https://www.amortization.in/blog/${post.slug?.current}` || "hello"} />
+      <link rel="canonical" href={`https://www.amortization.in/blog/${post.slug?.current}`} />
       <meta name="description" content={post.meta_description || 'Read our latest blog post.'} />
       <div className="container mx-auto px-4 py-6 pt-20 max-w-4xl">
         <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
