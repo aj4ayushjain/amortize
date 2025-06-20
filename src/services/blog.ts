@@ -204,10 +204,10 @@ export class SanityBlogService implements BlogService {
         `*[_type == "post" && slug.current == $slug][0] {
           _id,  
           title,
-          slug->{current},
+          slug,
           mainImage,
           publishedAt,
-          author->{name},
+          author,
           categories[]->{title},
           body[]{
             ...,
