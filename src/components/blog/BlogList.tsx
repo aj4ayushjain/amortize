@@ -15,10 +15,12 @@ export function BlogPostCard({ post }:BlogPostCardProps) {
 
   
   return (
+    
     <article
       key={post._id}
       className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
     >
+      <link rel="canonical" href={`https://www.amortization.in/blog/`} />
       <Link to={`/blog/${post.slug?.current}`} className="block">
         {post.mainImage ? (
           <div className="relative h-48 overflow-hidden">
