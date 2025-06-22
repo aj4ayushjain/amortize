@@ -121,6 +121,9 @@ function AmortizationCalculator() {
   }
 
   return (
+  <>
+    <title>Free Amortization Calculator – Loan EMI & Interest Schedule</title>
+    <link rel="canonical" href={`https://www.amortization.in/`} />
     <main className="container mx-auto px-4 py-6 pt-20 max-w-6xl">
       <div className="space-y-8">
         <div className="text-center">
@@ -252,6 +255,7 @@ function AmortizationCalculator() {
         </div>
       </div>
     </main>
+  </>
   );
 }
 
