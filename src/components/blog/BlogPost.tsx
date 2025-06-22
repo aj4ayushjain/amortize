@@ -5,7 +5,6 @@ import { PortableText } from '@portabletext/react';
 
 import { getBlogService } from '../../services/BlogServiceFactory';
 import { urlFor } from '@/services/sanityClient';
-import { Helmet } from 'react-helmet-async';
 const blogService = getBlogService();
 
 
@@ -62,13 +61,11 @@ export function BlogPost() {
 
   return (
     <>
-      <Helmet prioritizeSeoTags>
 
         <title>{post.meta_title || post.title}</title>
         <meta name="description" content={post.meta_description || 'Read our latest blog post.'} />
 
         <link rel="canonical" href={`https://www.amortization.in/blog/${post.slug?.current}`} />
-      </Helmet>
                   
       <div className="container mx-auto px-4 py-6 pt-20 max-w-4xl">
         <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
