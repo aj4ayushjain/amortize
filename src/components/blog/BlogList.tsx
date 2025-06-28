@@ -16,7 +16,7 @@ export function BlogPostCard({ post }:BlogPostCardProps) {
   return (
     <>
       <title>Free Amortization Calculator – Loan EMI & Interest Schedule</title>
-      <link rel="canonical" href={`https://www.amortization.in/blog/`} />
+      <link rel="canonical" href={`https://www.amortization.in/blog`} />
       <article
         key={post._id}
         className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
