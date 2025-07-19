@@ -9,6 +9,7 @@ import { BlogList } from "@/components/blog/BlogList"
 import { BlogPost } from "@/components/blog/BlogPost"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
+import { downloadAmortizationPDF } from "./services/schedulePDF"
 
 function AmortizationCalculator() {
   const [loanAmount, setLoanAmount] = useState<string>("")
@@ -221,6 +222,13 @@ function AmortizationCalculator() {
                   className="mb-4" 
                   onClick={() => downloadAmortizationExcel(schedule)}>
                 Download Excel
+              </Button>
+              <Button
+                  type ="button" 
+                  variant="outline" 
+                  className="mb-4 ml-2" 
+                  onClick={() => downloadAmortizationPDF(schedule)}>
+                Download PDF
               </Button>
               <div className="overflow-x-auto max-h-[calc(100vh-24rem)]">
                 <Table className="w-full border border-gray-200 text-sm sm:text-base">
