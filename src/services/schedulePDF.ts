@@ -1,6 +1,9 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+import './NotoSans-Regular-normal.js';
+
+
 interface ScheduleItem {
   month: number;
   emi: string;
@@ -13,9 +16,9 @@ export const downloadAmortizationPDF = (schedule: ScheduleItem[]) => {
   const doc = new jsPDF();
 
   // Add title
+  doc.setFont("NotoSans-Regular");
   doc.setFontSize(16);
-  doc.text('Amortization Schedule', 14, 15);
-
+  doc.text('Amortization Schedule ₹', 14, 15);
   // Add the schedule table
   autoTable(doc, {
     head: [['Month', 'EMI', 'Principal', 'Interest', 'Balance']],
@@ -36,6 +39,7 @@ export const downloadAmortizationPDF = (schedule: ScheduleItem[]) => {
       fillColor: [245, 245, 245],
     },
     styles: {
+      font: "NotoSans-Regular",
       fontSize: 10,
       cellPadding: 3,
     },

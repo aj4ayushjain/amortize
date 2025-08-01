@@ -43,10 +43,10 @@ export const downloadAmortizationExcel = async (schedule: ScheduleItem[]) => {
   schedule.forEach((row) => {
     worksheet.addRow({
       month: row.month,
-      emi: parseFloat(row.emi.replace(/,/g, "") ),
-      principal: parseFloat(row.principal.replace(/,/g, "") ),
-      interest: parseFloat(row.interest.replace(/,/g, "") ),
-      balance: parseFloat(row.balance.replace(/,/g, "") ),  
+      emi: row.emi,
+      principal: row.principal,
+      interest: row.interest,
+      balance: row.balance,  
     });
   });
 

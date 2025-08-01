@@ -1,17 +1,46 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import AmortizationInfo from "@/components/ui/info"
 import { BlogList } from "@/components/blog/BlogList"
 import { BlogPost } from "@/components/blog/BlogPost"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
 import { downloadAmortizationPDF } from "./services/schedulePDF"
-
+import { SelectGroup } from "@radix-ui/react-select"
 function AmortizationCalculator() {
+  // --- Currency/timezone logic ---
+  type CurrencyOption = {
+    code: string;
+    symbol: string;
+    name: string;
+    locale: string;
+  };
+  const currencyOptions: CurrencyOption[] = [
+    { code: "INR", symbol: "₹", name: "Indian Rupee", locale: "en-IN" },
+    { code: "USD", symbol: "$", name: "US Dollar", locale: "en-US" },
+    { code: "EUR", symbol: "€", name: "Euro", locale: "de-DE" },
+    { code: "GBP", symbol: "£", name: "British Pound", locale: "en-GB" },
+    { code: "JPY", symbol: "¥", name: "Japanese Yen", locale: "ja-JP" },
+    { code: "AUD", symbol: "A$", name: "Australian Dollar", locale: "en-AU" },
+    { code: "CAD", symbol: "C$", name: "Canadian Dollar", locale: "en-CA" },
+    { code: "SGD", symbol: "S$", name: "Singapore Dollar", locale: "en-SG" },
+    { code: "CNY", symbol: "¥", name: "Chinese Yuan", locale: "zh-CN" },
+    { code: "ZAR", symbol: "R", name: "South African Rand", locale: "en-ZA" },
+    { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
+  ];
+
+  const [currency, setCurrency] = React.useState<string>("INR");
+
+
+  function getCurrencySymbol(code: string): string {
+    const found = currencyOptions.find(opt => opt.code === code);
+    return found ? found.symbol : "$";
+  }
   const [loanAmount, setLoanAmount] = useState<string>("")
   const [interestRate, setInterestRate] = useState<string>("")
   const [loanTenure, setLoanTenure] = useState<string>("")
@@ -49,21 +78,30 @@ function AmortizationCalculator() {
     return isValid
   }
 
-  const formatNumber = (num: string) => {
-    return num ? new Intl.NumberFormat("en-IN").format(Number(num)) : ""
+  const formatNumber = (num: string, code: string) => {
+    const currency = currencyOptions.find(opt => opt.code === code);
+    return num ? new Intl.NumberFormat(currency?.locale).format(Number(num)) : ""
   }
 
   const formatDisplayNumber = (num: number) => {
-
-    return num ? new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(num) : ""
-  }
+  if (!num && num !== 0) return "";
+  const selected = currencyOptions.find(opt => opt.code === currency);
+  const locale = selected ? selected.locale : "en-US";
+  return Intl.NumberFormat(locale, {style: "currency", currency: selected?.code}).format(num);
+}
 
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/,/g, "") // Remove commas
-    if (/^\d*$/.test(value)) {
-      setLoanAmount(value)
-      setErrors({ ...errors, loanAmount: "" })
-    }
+    // Support Russian currency input: allow spaces and ₽, remove them for value
+const rawValue = e.target.value
+  .replace(/,/g, "") // Remove commas (if any)
+  .replace(/\s+/g, "") // Remove all spaces
+  .replace(/₽/g, ""); // Remove ruble symbol
+
+// Only allow digits after normalization
+if (/^\d*$/.test(rawValue)) {
+  setLoanAmount(rawValue);
+  setErrors({ ...errors, loanAmount: "" });
+}
   }
   
 
@@ -141,16 +179,36 @@ function AmortizationCalculator() {
             <form onSubmit={(e) => { e.preventDefault(); calculateEMI(); }} className="space-y-4">
               <div>
                 <Label htmlFor="loanAmount" className="block text-sm font-medium">Loan Amount</Label>
+                  <div className="flex items-center mt-2">
+                    <Select
+                      value={currency}
+                      onValueChange={setCurrency}
+                    >
+                      <SelectTrigger className="rounded-r-none border-r-0 min-w-[60px] px-2 bg-gray-50 focus:ring-0 focus:border-primary-500">
+                        <SelectValue placeholder={getCurrencySymbol(currency)}>{getCurrencySymbol(currency)}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Select Currency</SelectLabel>
+                          {currencyOptions.map((option) => (
+                            <SelectItem key={option.code} value={option.code}>
+                              {option.symbol} {option.code}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                 <Input 
                   id="loanAmount"
                   type="text" 
-                  value={formatNumber(loanAmount)} 
+                  value={formatNumber(loanAmount, currency)} 
                   onChange={handleLoanAmountChange} 
                   placeholder="Eg. 50,000" 
-                  className="mt-1 w-full"
+                      className="rounded-l-none w-full border-l-0 focus:ring-0 focus:border-primary-500"
                   aria-label="Loan Amount"
                   aria-describedby="loanAmount-error"
                 />
+                  </div>
                 {errors.loanAmount && (
                   <p id="loanAmount-error" className="text-red-500 text-sm mt-1" role="alert">
                     {errors.loanAmount}
