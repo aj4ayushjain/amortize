@@ -34,7 +34,22 @@ function AmortizationCalculator() {
     { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
   ];
 
-  const [currency, setCurrency] = React.useState<string>("INR");
+  function getDefaultCurrencyByLocaleOrTimezone(locale: string, timeZone: string): string {
+    if (locale.startsWith('en-IN') || timeZone === 'Asia/Kolkata') return 'INR';
+    if (locale.startsWith('en-US') || timeZone.startsWith('America/')) return 'USD';
+    if (locale.startsWith('en-GB') || timeZone === 'Europe/London') return 'GBP';
+    if (locale.startsWith('ja-JP') || timeZone === 'Asia/Tokyo') return 'JPY';
+    if (locale.startsWith('ru-RU') || timeZone.startsWith('Europe/Moscow')) return 'RUB';
+    if (locale.startsWith('fr-FR') || timeZone === 'Europe/Paris') return 'EUR';
+    // Add more as needed
+    return 'USD'; // fallback
+  }
+
+  const [currency, setCurrency] = React.useState<string>(() => {
+    const locale = navigator.language || 'en-US';
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    return getDefaultCurrencyByLocaleOrTimezone(locale, timeZone);
+  });
 
 
   function getCurrencySymbol(code: string): string {
