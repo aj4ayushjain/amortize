@@ -42,11 +42,11 @@ function AmortizationCalculator() {
     if (locale.startsWith('ru-RU') || timeZone.startsWith('Europe/Moscow')) return 'RUB';
     if (locale.startsWith('fr-FR') || timeZone === 'Europe/Paris') return 'EUR';
     // Add more as needed
-    return 'USD'; // fallback
+    return 'INR'; // fallback
   }
 
   const [currency, setCurrency] = React.useState<string>(() => {
-    const locale = navigator.language || 'en-US';
+    const locale = navigator.language;
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
     return getDefaultCurrencyByLocaleOrTimezone(locale, timeZone);
   });
@@ -303,29 +303,31 @@ if (/^\d*$/.test(rawValue)) {
                   onClick={() => downloadAmortizationPDF(schedule)}>
                 Download PDF
               </Button>
-              <div className="overflow-x-auto max-h-[calc(100vh-24rem)]">
-                <Table className="w-full border border-gray-200 text-sm sm:text-base">
-                  <TableHeader className="sticky top-0 bg-gray-100">
-                    <TableRow>
-                      <TableHead className="p-2 sm:p-3 text-center">Month</TableHead>
-                      <TableHead className="p-2 sm:p-3 text-right">EMI</TableHead>
-                      <TableHead className="p-2 sm:p-3 text-right">Principal</TableHead>
-                      <TableHead className="p-2 sm:p-3 text-right">Interest</TableHead>
-                      <TableHead className="p-2 sm:p-3 text-right">Balance</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {schedule.map((row, index) => (
-                      <TableRow key={row.month} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                        <TableCell className="p-2 sm:p-3 text-center">{row.month}</TableCell>
-                        <TableCell className="p-2 sm:p-3 text-right">{row.emi}</TableCell>
-                        <TableCell className="p-2 sm:p-3 text-right">{row.principal}</TableCell>
-                        <TableCell className="p-2 sm:p-3 text-right">{row.interest}</TableCell>
-                        <TableCell className="p-2 sm:p-3 text-right">{row.balance}</TableCell>
+              <div className="overflow-x-auto">
+                <div className="relative overflow-y-auto max-h-[calc(100vh-24rem)]">
+                  <Table className="w-full border border-gray-200 text-sm sm:text-base">
+                    <TableHeader className="bg-gray-100 z-10">
+                      <TableRow>
+                        <TableHead className="sticky top-0 p-2 sm:p-3 text-center">Month</TableHead>
+                        <TableHead className="sticky top-0 p-2 sm:p-3 text-right">EMI</TableHead>
+                        <TableHead className="sticky top-0 p-2 sm:p-3 text-right">Principal</TableHead>
+                        <TableHead className="sticky top-0 p-2 sm:p-3 text-right">Interest</TableHead>
+                        <TableHead className="sticky top-0 p-2 sm:p-3 text-right">Balance</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {schedule.map((row, index) => (
+                        <TableRow key={row.month} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                          <TableCell className="p-2 sm:p-3 text-center">{row.month}</TableCell>
+                          <TableCell className="p-2 sm:p-3 text-right">{row.emi}</TableCell>
+                          <TableCell className="p-2 sm:p-3 text-right">{row.principal}</TableCell>
+                          <TableCell className="p-2 sm:p-3 text-right">{row.interest}</TableCell>
+                          <TableCell className="p-2 sm:p-3 text-right">{row.balance}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
             </CardContent>
           )}
