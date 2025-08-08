@@ -35,12 +35,12 @@ function AmortizationCalculator() {
   ];
 
   function getDefaultCurrencyByLocaleOrTimezone(locale: string, timeZone: string): string {
-    if (locale.startsWith('en-IN') || timeZone === 'Asia/Kolkata') return 'INR';
-    if (locale.startsWith('en-US') || timeZone.startsWith('America/')) return 'USD';
-    if (locale.startsWith('en-GB') || timeZone === 'Europe/London') return 'GBP';
-    if (locale.startsWith('ja-JP') || timeZone === 'Asia/Tokyo') return 'JPY';
-    if (locale.startsWith('ru-RU') || timeZone.startsWith('Europe/Moscow')) return 'RUB';
-    if (locale.startsWith('fr-FR') || timeZone === 'Europe/Paris') return 'EUR';
+    if (timeZone === 'Asia/Kolkata' || locale.startsWith('en-IN')) return 'INR';
+    if (timeZone.startsWith('America/') || locale.startsWith('en-US') ) return 'USD';
+    if (timeZone === 'Europe/London' || locale.startsWith('en-GB')) return 'GBP';
+    if (timeZone === 'Asia/Tokyo' || locale.startsWith('ja-JP') ) return 'JPY';
+    if (timeZone.startsWith('Europe/Moscow') || locale.startsWith('ru-RU') ) return 'RUB';
+    if (timeZone === 'Europe/Paris' ||locale.startsWith('fr-FR')) return 'EUR';
     // Add more as needed
     return 'INR'; // fallback
   }
