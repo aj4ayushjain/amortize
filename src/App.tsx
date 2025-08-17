@@ -37,7 +37,7 @@ function AmortizationCalculator() {
   function getDefaultCurrencyByLocaleOrTimezone(locale: string, timeZone: string): string {
 
     if (timeZone === 'Asia/Kolkata' || locale.startsWith('en-IN')) return 'INR';
-    if (timeZone === 'Europe/London' || locale.startsWith('en-GB')) return 'GBP';
+   
     if (timeZone === 'Asia/Tokyo' || locale.startsWith('ja-JP') ) return 'JPY';
     if (timeZone.startsWith('Europe/Moscow') || locale.startsWith('ru-RU') ) return 'RUB';
     if (timeZone === 'Europe/Paris' ||locale.startsWith('fr-FR')) return 'EUR';
@@ -46,8 +46,9 @@ function AmortizationCalculator() {
     if (timeZone === 'Asia/Singapore' || locale.startsWith('en-SG') ) return 'SGD';
     if (timeZone === 'Asia/Shanghai' || locale.startsWith('zh-CN') ) return 'CNY';
     if (timeZone === 'Africa/Johannesburg' || locale.startsWith('en-ZA') ) return 'ZAR';
+    
+    if (timeZone === 'Europe/London' || locale.startsWith('en-GB')) return 'GBP';
     if (timeZone.startsWith('America/') || locale.startsWith('en-US') ) return 'USD';
-
     // Add more as needed
     return 'INR'; // fallback
   }
