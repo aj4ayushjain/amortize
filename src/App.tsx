@@ -34,29 +34,29 @@ function AmortizationCalculator() {
     { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
   ];
 
-  function getDefaultCurrencyByLocaleOrTimezone(locale: string, timeZone: string): string {
+  function getDefaultCurrencyByLocaleOrTimezone(locale: string[], timeZone: string): string {
 
-    if (timeZone === 'Asia/Kolkata' || locale.startsWith('en-IN')) return 'INR';
+    if (timeZone === 'Asia/Kolkata' || locale.includes('en-IN') || locale.includes('hi-IN') || locale.includes('kn-IN')) return 'INR';
    
-    if (timeZone === 'Asia/Tokyo' || locale.startsWith('ja-JP') ) return 'JPY';
-    if (timeZone.startsWith('Europe/Moscow') || locale.startsWith('ru-RU') ) return 'RUB';
-    if (timeZone === 'Europe/Paris' ||locale.startsWith('fr-FR')) return 'EUR';
-    if (timeZone === 'Australia/Sydney' || locale.startsWith('en-AU') ) return 'AUD';
-    if (timeZone.startsWith('Canada/') || locale.startsWith('en-CA') ) return 'CAD';
-    if (timeZone === 'Asia/Singapore' || locale.startsWith('en-SG') ) return 'SGD';
-    if (timeZone === 'Asia/Shanghai' || locale.startsWith('zh-CN') ) return 'CNY';
-    if (timeZone === 'Africa/Johannesburg' || locale.startsWith('en-ZA') ) return 'ZAR';
+    if (timeZone === 'Asia/Tokyo' || locale.includes('ja-JP') ) return 'JPY';
+    if (timeZone.startsWith('Europe/Moscow') || locale.includes('ru-RU') ) return 'RUB';
+    if (timeZone === 'Europe/Paris' ||locale.includes('fr-FR') || locale.includes('en-ES')) return 'EUR';
+    if (timeZone === 'Australia/Sydney' || locale.includes('en-AU') ) return 'AUD';
+    if (timeZone.startsWith('Canada/') || locale.includes('en-CA') ) return 'CAD';
+    if (timeZone === 'Asia/Singapore' || locale.includes('en-SG') ) return 'SGD';
+    if (timeZone === 'Asia/Shanghai' || locale.includes('zh-CN') ) return 'CNY';
+    if (timeZone === 'Africa/Johannesburg' || locale.includes('en-ZA') ) return 'ZAR';
     
-    if (timeZone === 'Europe/London' || locale.startsWith('en-GB')) return 'GBP';
-    if (timeZone.startsWith('America/') || locale.startsWith('en-US') ) return 'USD';
+    if (timeZone === 'Europe/London' ) return 'GBP';
+    if (timeZone.startsWith('America/')) return 'USD';
     // Add more as needed
     return 'INR'; // fallback
   }
 
   const [currency, setCurrency] = React.useState<string>(() => {
-    const locale = navigator.language;
+    const user_locales = navigator.languages || [navigator.language];
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    return getDefaultCurrencyByLocaleOrTimezone(locale, timeZone);
+    return getDefaultCurrencyByLocaleOrTimezone(user_locales, timeZone);
   });
 
 
