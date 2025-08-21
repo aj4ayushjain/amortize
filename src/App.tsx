@@ -54,7 +54,7 @@ function AmortizationCalculator() {
   }
 
   const [currency, setCurrency] = React.useState<string>(() => {
-    const user_locales = navigator.languages || [navigator.language];
+    const user_locales = [...(navigator.languages || [navigator.language])];
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
     return getDefaultCurrencyByLocaleOrTimezone(user_locales, timeZone);
   });
