@@ -23,6 +23,7 @@
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.0.9",
     "@types/file-saver": "^2.0.7",
+    "@userback/widget": "^0.3.11",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "canvg": "^4.0.3",
