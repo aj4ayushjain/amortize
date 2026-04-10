@@ -6,6 +6,8 @@ export type CalculatorPageId =
   | "emergency-fund"
   | "bond-yield"
   | "ppf"
+  | "sip"
+  | "cagr"
 
 type CalculatorLink = {
   id: CalculatorPageId
@@ -50,6 +52,20 @@ const CALCULATORS: CalculatorLink[] = [
     title: "PPF Calculator",
     description: "Estimate Public Provident Fund maturity with monthly deposits (illustrative).",
     cta: "Use PPF Calculator",
+  },
+  {
+    id: "sip",
+    path: "/sip-calculator",
+    title: "SIP Calculator",
+    description: "Project mutual fund SIP maturity with monthly investments and expected return (illustrative).",
+    cta: "Use SIP Calculator",
+  },
+  {
+    id: "cagr",
+    path: "/cagr-calculator",
+    title: "CAGR Calculator",
+    description: "Compound annual growth rate from beginning value, ending value, and years.",
+    cta: "Use CAGR Calculator",
   },
 ]
 

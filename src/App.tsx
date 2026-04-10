@@ -12,6 +12,8 @@ import { ExtraPaymentsCalculator } from "@/components/ExtraPaymentsCalculator"
 import { EmergencyFundCalculator } from "@/components/EmergencyFundCalculator"
 import { BondYieldCalculator } from "@/components/BondYieldCalculator"
 import { PPFCalculator } from "@/components/PPFCalculator"
+import { SIPCalculator } from "@/components/SIPCalculator"
+import { CAGRCalculator } from "@/components/CAGRCalculator"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
@@ -371,6 +373,8 @@ export default function App() {
         <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculator />} />
         <Route path="/bond-yield-calculator" element={<BondYieldCalculator />} />
         <Route path="/ppf-calculator" element={<PPFCalculator />} />
+        <Route path="/sip-calculator" element={<SIPCalculator />} />
+        <Route path="/cagr-calculator" element={<CAGRCalculator />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
       </Routes>
