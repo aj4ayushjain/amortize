@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom"
 
-export type CalculatorPageId = "amortization" | "loan-prepayment" | "emergency-fund"
+export type CalculatorPageId =
+  | "amortization"
+  | "loan-prepayment"
+  | "emergency-fund"
+  | "bond-yield"
+  | "ppf"
 
 type CalculatorLink = {
   id: CalculatorPageId
@@ -31,6 +36,20 @@ const CALCULATORS: CalculatorLink[] = [
     title: "Emergency Fund Calculator",
     description: "Calculate how much you need to save for a safety net.",
     cta: "Use Emergency Fund Calculator",
+  },
+  {
+    id: "bond-yield",
+    path: "/bond-yield-calculator",
+    title: "Bond Yield Calculator",
+    description: "Current yield and yield to maturity (YTM) from price, coupon, and maturity.",
+    cta: "Use Bond Yield Calculator",
+  },
+  {
+    id: "ppf",
+    path: "/ppf-calculator",
+    title: "PPF Calculator",
+    description: "Estimate Public Provident Fund maturity with monthly deposits (illustrative).",
+    cta: "Use PPF Calculator",
   },
 ]
 

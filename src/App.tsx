@@ -10,6 +10,8 @@ import { BlogList } from "@/components/blog/BlogList"
 import { BlogPost } from "@/components/blog/BlogPost"
 import { ExtraPaymentsCalculator } from "@/components/ExtraPaymentsCalculator"
 import { EmergencyFundCalculator } from "@/components/EmergencyFundCalculator"
+import { BondYieldCalculator } from "@/components/BondYieldCalculator"
+import { PPFCalculator } from "@/components/PPFCalculator"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
@@ -367,6 +369,8 @@ export default function App() {
         <Route path="/" element={<AmortizationCalculator />} />
         <Route path="/extra-payments-calculator" element={<ExtraPaymentsCalculator />} />
         <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculator />} />
+        <Route path="/bond-yield-calculator" element={<BondYieldCalculator />} />
+        <Route path="/ppf-calculator" element={<PPFCalculator />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
       </Routes>
