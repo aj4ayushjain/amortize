@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -8,62 +8,27 @@ import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectVa
 import AmortizationInfo from "@/components/ui/info"
 import { BlogList } from "@/components/blog/BlogList"
 import { BlogPost } from "@/components/blog/BlogPost"
+import { ExtraPaymentsCalculator } from "@/components/ExtraPaymentsCalculator"
+import { EmergencyFundCalculator } from "@/components/EmergencyFundCalculator"
+import { UseOurCalculators } from "@/components/UseOurCalculators"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
 import { downloadAmortizationPDF } from "./services/schedulePDF"
 import { SelectGroup } from "@radix-ui/react-select"
+import {
+  CURRENCY_OPTIONS,
+  getDefaultCurrencyByLocale,
+  getCurrencySymbol,
+  formatNumberForDisplay,
+  MAX_LOAN_AMOUNT,
+  MAX_INTEREST_RATE,
+  MAX_LOAN_TENURE_YEARS,
+} from "@/lib/currency"
+import { applySeoTags } from "@/lib/seo"
+import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
+
 function AmortizationCalculator() {
-  // --- Currency/timezone logic ---
-  type CurrencyOption = {
-    code: string;
-    symbol: string;
-    name: string;
-    locale: string;
-  };
-  const currencyOptions: CurrencyOption[] = [
-    { code: "INR", symbol: "₹", name: "Indian Rupee", locale: "en-IN" },
-    { code: "USD", symbol: "$", name: "US Dollar", locale: "en-US" },
-    { code: "EUR", symbol: "€", name: "Euro", locale: "de-DE" },
-    { code: "GBP", symbol: "£", name: "British Pound", locale: "en-GB" },
-    { code: "JPY", symbol: "¥", name: "Japanese Yen", locale: "ja-JP" },
-    { code: "AUD", symbol: "A$", name: "Australian Dollar", locale: "en-AU" },
-    { code: "CAD", symbol: "C$", name: "Canadian Dollar", locale: "en-CA" },
-    { code: "SGD", symbol: "S$", name: "Singapore Dollar", locale: "en-SG" },
-    { code: "CNY", symbol: "¥", name: "Chinese Yuan", locale: "zh-CN" },
-    { code: "ZAR", symbol: "R", name: "South African Rand", locale: "en-ZA" },
-    { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
-  ];
-
-  function getDefaultCurrencyByLocaleOrTimezone(locale: string[], timeZone: string): string {
-
-    if (timeZone === 'Asia/Kolkata' || locale.includes('en-IN') || locale.includes('hi-IN') || locale.includes('kn-IN')) return 'INR';
-   
-    if (timeZone === 'Asia/Tokyo' || locale.includes('ja-JP') ) return 'JPY';
-    if (timeZone.startsWith('Europe/Moscow') || locale.includes('ru-RU') ) return 'RUB';
-    if (timeZone === 'Europe/Paris' ||locale.includes('fr-FR') || locale.includes('en-ES')) return 'EUR';
-    if (timeZone === 'Australia/Sydney' || locale.includes('en-AU') ) return 'AUD';
-    if (timeZone.startsWith('Canada/') || locale.includes('en-CA') ) return 'CAD';
-    if (timeZone === 'Asia/Singapore' || locale.includes('en-SG') ) return 'SGD';
-    if (timeZone === 'Asia/Shanghai' || locale.includes('zh-CN') ) return 'CNY';
-    if (timeZone === 'Africa/Johannesburg' || locale.includes('en-ZA') ) return 'ZAR';
-    
-    if (timeZone === 'Europe/London' ) return 'GBP';
-    if (timeZone.startsWith('America/')) return 'USD';
-    // Add more as needed
-    return 'INR'; // fallback
-  }
-
-  const [currency, setCurrency] = React.useState<string>(() => {
-    const user_locales = [...(navigator.languages || [navigator.language])];
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    return getDefaultCurrencyByLocaleOrTimezone(user_locales, timeZone);
-  });
-
-
-  function getCurrencySymbol(code: string): string {
-    const found = currencyOptions.find(opt => opt.code === code);
-    return found ? found.symbol : "$";
-  }
+  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
   const [loanAmount, setLoanAmount] = useState<string>("")
   const [interestRate, setInterestRate] = useState<string>("")
   const [loanTenure, setLoanTenure] = useState<string>("")
@@ -79,39 +44,57 @@ function AmortizationCalculator() {
 
   const validateInputs = () => {
     let isValid = true
-    let newErrors = {}
-    if (!loanAmount || parseFloat(loanAmount) <= 0) {
-      newErrors = { ...newErrors, loanAmount: "Please enter a valid loan amount" }
+    const newErrors: { loanAmount?: string; interestRate?: string; loanTenure?: string } = {}
+    const p = parseFloat(loanAmount)
+    const r = parseFloat(interestRate)
+    const t = parseFloat(loanTenure)
+
+    if (!loanAmount || loanAmount.trim() === "") {
+      newErrors.loanAmount = "Please enter a loan amount"
+      isValid = false
+    } else if (isNaN(p) || p <= 0) {
+      newErrors.loanAmount = "Please enter a valid loan amount"
+      isValid = false
+    } else if (p > MAX_LOAN_AMOUNT) {
+      newErrors.loanAmount = "Loan amount is too large"
       isValid = false
     }
-    if (!interestRate || parseFloat(interestRate) <= 0) {
-      newErrors = { ...newErrors, interestRate: "Please enter a valid interest rate" }
+
+    if (!interestRate || interestRate.trim() === "") {
+      newErrors.interestRate = "Please enter an interest rate"
+      isValid = false
+    } else if (isNaN(r) || r <= 0) {
+      newErrors.interestRate = "Please enter a valid interest rate"
+      isValid = false
+    } else if (r > MAX_INTEREST_RATE) {
+      newErrors.interestRate = "Interest rate cannot exceed 100%"
       isValid = false
     }
-    if (!loanTenure || parseFloat(loanTenure) <= 0) {
-      newErrors = { ...newErrors, loanTenure: "Please enter a valid loan tenure" }
+
+    if (!loanTenure || loanTenure.trim() === "") {
+      newErrors.loanTenure = "Please enter loan tenure"
+      isValid = false
+    } else if (isNaN(t) || t <= 0) {
+      newErrors.loanTenure = "Please enter a valid loan tenure"
+      isValid = false
+    } else if (t >= MAX_LOAN_TENURE_YEARS || !Number.isInteger(t)) {
+      newErrors.loanTenure = "Loan tenure must be a whole number between 1 and 99 years"
       isValid = false
     }
-    if (!loanTenure || parseFloat(loanTenure) >= 100) {
-      // Assuming loan tenure is in years, this checks if it's over 100 years
-      newErrors = { ...newErrors, loanTenure: "Loan tenure over 100? Time travel not supported." }
-      isValid = false
-    }
+
     setErrors(newErrors)
     return isValid
   }
 
-  const formatNumber = (num: string, code: string) => {
-    const currency = currencyOptions.find(opt => opt.code === code);
-    return num ? new Intl.NumberFormat(currency?.locale).format(Number(num)) : ""
-  }
+  const formatNumber = (num: string, code: string) => formatNumberForDisplay(num, code)
 
   const formatDisplayNumber = (num: number) => {
-  if (!num && num !== 0) return "";
-  const selected = currencyOptions.find(opt => opt.code === currency);
-  const locale = selected ? selected.locale : "en-US";
-  return Intl.NumberFormat(locale, {style: "currency", currency: selected?.code}).format(num);
-}
+    if (num !== 0 && !num) return ""
+    const opt = CURRENCY_OPTIONS.find((o) => o.code === currency)
+    const locale = opt?.locale ?? "en-US"
+    const curr = opt?.code ?? "USD"
+    return Intl.NumberFormat(locale, { style: "currency", currency: curr }).format(num)
+  }
 
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Support Russian currency input: allow spaces and ₽, remove them for value
@@ -182,11 +165,18 @@ if (/^\d*$/.test(rawValue)) {
     setErrors({})
   }
 
+  useEffect(() => {
+    applySeoTags({
+      title: "Free Amortization Calculator - Loan EMI & Interest Schedule",
+      description:
+        "Calculate your loan EMI, monthly interest, and complete amortization schedule in seconds.",
+      canonicalPath: "/",
+    })
+  }, [])
+
   return (
   <>
-    <title>Free Amortization Calculator – Loan EMI & Interest Schedule</title>
-    <link rel="canonical" href={`https://www.amortization.in/`} />
-    <main className="container mx-auto px-4 py-6 pt-20 max-w-6xl">
+    <main className={CALCULATOR_MAIN_CLASS}>
       <div className="space-y-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
@@ -196,7 +186,7 @@ if (/^\d*$/.test(rawValue)) {
             Calculate your EMI, total interest, and view detailed loan repayment schedule
           </p>
         </div>
-        
+
         <Card className="shadow-lg rounded-lg">
           <CardContent className="p-4 sm:p-6 space-y-6">
             <form onSubmit={(e) => { e.preventDefault(); calculateEMI(); }} className="space-y-4">
@@ -213,7 +203,7 @@ if (/^\d*$/.test(rawValue)) {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Select Currency</SelectLabel>
-                          {currencyOptions.map((option) => (
+                          {CURRENCY_OPTIONS.map((option) => (
                             <SelectItem key={option.code} value={option.code}>
                               {option.symbol} {option.code}
                             </SelectItem>
@@ -340,6 +330,8 @@ if (/^\d*$/.test(rawValue)) {
             </CardContent>
           )}
         </Card>
+
+        <UseOurCalculators exclude="amortization" />
         
         <div className="mt-8">
           <AmortizationInfo />
@@ -351,6 +343,15 @@ if (/^\d*$/.test(rawValue)) {
 }
 
 function Blog() {
+  useEffect(() => {
+    applySeoTags({
+      title: "Loan & Mortgage Blog - Amortization.in",
+      description:
+        "Read guides and tips on loan amortization, EMI planning, mortgages, and smarter debt payoff strategies.",
+      canonicalPath: "/blog",
+    })
+  }, [])
+
   return (
     <main className="container mx-auto px-4 py-6 pt-20 max-w-6xl">
       <h1 className="text-2xl sm:text-3xl font-bold mb-8">Blog</h1>
@@ -364,6 +365,8 @@ export default function App() {
     <div className="min-h-screen bg-background">
       <Routes>
         <Route path="/" element={<AmortizationCalculator />} />
+        <Route path="/extra-payments-calculator" element={<ExtraPaymentsCalculator />} />
+        <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculator />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
       </Routes>
