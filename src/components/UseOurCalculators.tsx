@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-export type CalculatorPageId = "amortization" | "extra-payments" | "emergency-fund"
+export type CalculatorPageId = "amortization" | "loan-prepayment" | "emergency-fund"
 
 type CalculatorLink = {
   id: CalculatorPageId
@@ -19,11 +19,11 @@ const CALCULATORS: CalculatorLink[] = [
     cta: "Use Amortization Calculator",
   },
   {
-    id: "extra-payments",
+    id: "loan-prepayment",
     path: "/extra-payments-calculator",
-    title: "Extra Payments Calculator",
-    description: "See how additional monthly payments can shorten tenure and save interest.",
-    cta: "Use Extra Payments Calculator",
+    title: "Loan Prepayment Calculator",
+    description: "See how prepaying principal can shorten tenure and save interest.",
+    cta: "Use Loan Prepayment Calculator",
   },
   {
     id: "emergency-fund",

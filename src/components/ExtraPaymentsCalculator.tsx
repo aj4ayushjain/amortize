@@ -92,13 +92,13 @@ export function ExtraPaymentsCalculator() {
     }
 
     if (!rawExtra || rawExtra.trim() === "") {
-      newErrors.extraPayment = "Please enter an extra payment amount"
+      newErrors.extraPayment = "Please enter a monthly prepayment amount"
       isValid = false
     } else if (isNaN(ex) || ex < 0) {
-      newErrors.extraPayment = "Extra payment must be 0 or greater"
+      newErrors.extraPayment = "Prepayment must be 0 or greater"
       isValid = false
     } else if (ex > MAX_LOAN_AMOUNT) {
-      newErrors.extraPayment = "Extra payment is too large"
+      newErrors.extraPayment = "Prepayment amount is too large"
       isValid = false
     }
 
@@ -162,7 +162,7 @@ export function ExtraPaymentsCalculator() {
     if (paymentWithExtra <= balance * monthlyRate) {
       setErrors((prev) => ({
         ...prev,
-        extraPayment: "Extra payment is too low to reduce loan balance with this rate.",
+        extraPayment: "Prepayment is too low to reduce loan balance with this rate.",
       }))
       return
     }
@@ -210,19 +210,19 @@ export function ExtraPaymentsCalculator() {
 
   useEffect(() => {
     applySeoTags({
-      title: "Extra Payments Calculator - Save Interest on Your Loan",
+      title: "Loan Prepayment Calculator - Save Interest on Your Loan",
       description:
-        "Use the Extra Payments Calculator to see how additional monthly payments reduce loan tenure and total interest cost.",
+        "Use the Loan Prepayment Calculator to see how prepaying principal reduces loan tenure and total interest cost.",
       canonicalPath: "/extra-payments-calculator",
       schema: {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        name: "Extra Payments Calculator",
+        name: "Loan Prepayment Calculator",
         url: `${SITE_URL}/extra-payments-calculator`,
         applicationCategory: "FinanceApplication",
         operatingSystem: "Any",
         description:
-          "Interactive loan extra payment calculator to estimate interest savings and reduced repayment time.",
+          "Interactive loan prepayment calculator to estimate interest savings and reduced repayment time.",
       },
     })
   }, [])
@@ -231,9 +231,9 @@ export function ExtraPaymentsCalculator() {
     <main className={CALCULATOR_MAIN_CLASS}>
       <div className="space-y-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl">Extra Payments Calculator</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl">Loan Prepayment Calculator</h1>
           <p className="text-gray-600 mt-4 text-sm sm:text-base">
-            See how extra monthly payments can reduce your tenure and save interest.
+            See how prepaying principal each month can reduce your tenure and save interest.
           </p>
         </div>
 
@@ -295,7 +295,7 @@ export function ExtraPaymentsCalculator() {
               </div>
 
               <div>
-                <Label htmlFor="extra-payment" className="block text-sm font-medium">Extra Payment Per Month</Label>
+                <Label htmlFor="extra-payment" className="block text-sm font-medium">Prepayment Per Month</Label>
                 <div className="flex items-center mt-2">
                   <Select value={currency} onValueChange={setCurrency}>
                     <SelectTrigger className="rounded-r-none border-r-0 min-w-[60px] px-2 bg-gray-50 focus:ring-0 focus:border-primary-500">
@@ -346,11 +346,11 @@ export function ExtraPaymentsCalculator() {
                   <p className="font-semibold">{formatTenure(results.newTenureMonths)}</p>
                 </div>
                 <div className="p-3 bg-gray-50 rounded-md">
-                  <p className="text-gray-600">Interest Without Extra Payments</p>
+                  <p className="text-gray-600">Interest Without Prepayment</p>
                   <p className="font-semibold">{formatDisplayNumber(results.totalInterestWithoutExtra)}</p>
                 </div>
                 <div className="p-3 bg-gray-50 rounded-md">
-                  <p className="text-gray-600">Interest With Extra Payments</p>
+                  <p className="text-gray-600">Interest With Prepayment</p>
                   <p className="font-semibold">{formatDisplayNumber(results.totalInterestWithExtra)}</p>
                 </div>
                 <div className="p-3 bg-green-50 rounded-md">
@@ -366,7 +366,7 @@ export function ExtraPaymentsCalculator() {
           )}
         </Card>
 
-        <UseOurCalculators exclude="extra-payments" className="mt-8" />
+        <UseOurCalculators exclude="loan-prepayment" className="mt-8" />
       </div>
     </main>
   )
