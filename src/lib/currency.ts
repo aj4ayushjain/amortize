@@ -13,7 +13,7 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
   { code: "ZAR", symbol: "R", name: "South African Rand", locale: "en-ZA" },
   { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
   { code: "TRY", symbol: "₺", name: "Turkish Lira", locale: "tr-TR"},
-  { code: "RON", symbol: "lei", name: "Romanian Leu", locale: "ro-RO"},
+  { code: "RON", symbol: "L", name: "Romanian Leu", locale: "ro-RO"},
   { code: "BRL", symbol: "R$", name: "Brazilian Real", locale: "pt-BR"},
 ]
 
