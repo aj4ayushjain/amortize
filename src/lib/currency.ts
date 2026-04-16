@@ -15,6 +15,9 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
   { code: "TRY", symbol: "₺", name: "Turkish Lira", locale: "tr-TR"},
   { code: "RON", symbol: "L", name: "Romanian Leu", locale: "ro-RO"},
   { code: "BRL", symbol: "R$", name: "Brazilian Real", locale: "pt-BR"},
+  { code: "UGX", symbol: "Ush", name: "Ugandan Shilling", locale: "en-UG" },
+  { code: "AZN", symbol: "₼", name: "Azerbaijani Manat", locale: "az-AZ" },
+  { code: "BBD", symbol: "Bds$", name: "Barbadian Dollar", locale: "en-BB" },
 ]
 
 export function getDefaultCurrencyByLocale(): string {
@@ -25,13 +28,16 @@ export function getDefaultCurrencyByLocale(): string {
   if (timeZone === "Asia/Tokyo" || locales.includes("ja-JP")) return "JPY"
   if (timeZone.startsWith("Europe/Moscow") || locales.includes("ru-RU")) return "RUB"
   if (timeZone === "Europe/Bucharest" || locales.includes("ro-RO")) return "RON"
-  if (timeZone === "Europe/Paris" || timeZone === "Europe/Spain"  || timeZone === "Europe/Berlin" || locales.some((l) => ["fr-FR", "en-ES", "es-ES"].includes(l))) return "EUR"
+  if (timeZone === "Europe/Paris" || timeZone === "Europe/Spain" || timeZone === "Europe/Berlin" || timeZone === "Europe/Lisbon" || locales.some((l) => ["fr-FR", "en-ES", "es-ES", "pt-PT"].includes(l))) return "EUR"
   if (timeZone === "Australia/Sydney" || locales.includes("en-AU")) return "AUD"
   if (timeZone.startsWith("Canada/") || locales.includes("en-CA")) return "CAD"
   if (timeZone === "Asia/Singapore" || locales.includes("en-SG")) return "SGD"
   if (timeZone === "Asia/Shanghai" || locales.includes("zh-CN")) return "CNY"
   if (timeZone === "Africa/Johannesburg" || locales.includes("en-ZA")) return "ZAR"
   if (timeZone === "Europe/Istanbul" || locales.includes("tr-TR")) return "TRY"
+  if (timeZone === "Africa/Kampala" || locales.includes("en-UG")) return "UGX"
+  if (timeZone === "Asia/Baku" || locales.includes("az-AZ")) return "AZN"
+  if (timeZone === "America/Barbados" || locales.includes("en-BB")) return "BBD"
   if (timeZone === "Europe/London") return "GBP"
   if (timeZone.startsWith("America/")) return "USD"
   return "INR"
