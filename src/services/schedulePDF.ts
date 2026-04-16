@@ -18,7 +18,7 @@ export const downloadAmortizationPDF = (schedule: ScheduleItem[]) => {
   // Add title
   doc.setFont("NotoSans-Regular");
   doc.setFontSize(16);
-  doc.text('Amortization Schedule ₹', 14, 15);
+  doc.text('Amortization Schedule', 14, 15);
   // Add the schedule table
   autoTable(doc, {
     head: [['Month', 'EMI', 'Principal', 'Interest', 'Balance']],
