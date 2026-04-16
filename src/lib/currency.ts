@@ -12,20 +12,26 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
   { code: "CNY", symbol: "¥", name: "Chinese Yuan", locale: "zh-CN" },
   { code: "ZAR", symbol: "R", name: "South African Rand", locale: "en-ZA" },
   { code: "RUB", symbol: "₽", name: "Russian Ruble", locale: "ru-RU" },
+  { code: "TRY", symbol: "₺", name: "Turkish Lira", locale: "tr-TR"},
+  { code: "RON", symbol: "lei", name: "Romanian Leu", locale: "ro-RO"},
+  { code: "BRL", symbol: "R$", name: "Brazilian Real", locale: "pt-BR"},
 ]
 
 export function getDefaultCurrencyByLocale(): string {
   const locales = [...(navigator.languages || [navigator.language])]
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""
   if (timeZone === "Asia/Kolkata" || locales.some((l) => ["en-IN", "hi-IN", "kn-IN"].includes(l))) return "INR"
+  if (timeZone === "America/Sao_Paulo" || locales.includes("pt-BR")) return "BRL"
   if (timeZone === "Asia/Tokyo" || locales.includes("ja-JP")) return "JPY"
   if (timeZone.startsWith("Europe/Moscow") || locales.includes("ru-RU")) return "RUB"
-  if (timeZone === "Europe/Paris" || locales.some((l) => ["fr-FR", "en-ES"].includes(l))) return "EUR"
+  if (timeZone === "Europe/Bucharest" || locales.includes("ro-RO")) return "RON"
+  if (timeZone === "Europe/Paris" || timeZone === "Europe/Spain"  || timeZone === "Europe/Berlin" || locales.some((l) => ["fr-FR", "en-ES", "es-ES"].includes(l))) return "EUR"
   if (timeZone === "Australia/Sydney" || locales.includes("en-AU")) return "AUD"
   if (timeZone.startsWith("Canada/") || locales.includes("en-CA")) return "CAD"
   if (timeZone === "Asia/Singapore" || locales.includes("en-SG")) return "SGD"
   if (timeZone === "Asia/Shanghai" || locales.includes("zh-CN")) return "CNY"
   if (timeZone === "Africa/Johannesburg" || locales.includes("en-ZA")) return "ZAR"
+  if (timeZone === "Europe/Istanbul" || locales.includes("tr-TR")) return "TRY"
   if (timeZone === "Europe/London") return "GBP"
   if (timeZone.startsWith("America/")) return "USD"
   return "INR"
