@@ -18,6 +18,7 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
   { code: "UGX", symbol: "Ush", name: "Ugandan Shilling", locale: "en-UG" },
   { code: "AZN", symbol: "₼", name: "Azerbaijani Manat", locale: "az-AZ" },
   { code: "BBD", symbol: "Bds$", name: "Barbadian Dollar", locale: "en-BB" },
+  { code: "HUF", symbol: "Ft", name: "Hungarian Forint", locale: "hu-HU" },
 ]
 
 export function getDefaultCurrencyByLocale(): string {
@@ -35,6 +36,7 @@ export function getDefaultCurrencyByLocale(): string {
   if (timeZone === "Asia/Shanghai" || locales.includes("zh-CN")) return "CNY"
   if (timeZone === "Africa/Johannesburg" || locales.includes("en-ZA")) return "ZAR"
   if (timeZone === "Europe/Istanbul" || locales.includes("tr-TR")) return "TRY"
+  if (timeZone === "Europe/Budapest" || locales.includes("hu-HU")) return "HUF"
   if (timeZone === "Africa/Kampala" || locales.includes("en-UG")) return "UGX"
   if (timeZone === "Asia/Baku" || locales.includes("az-AZ")) return "AZN"
   if (timeZone === "America/Barbados" || locales.includes("en-BB")) return "BBD"
