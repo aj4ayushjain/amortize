@@ -53,26 +53,31 @@ export function applySeoTags({
   description,
   canonicalPath,
   schema,
+  ogType,
+  ogImage,
 }: {
   title: string
   description: string
   canonicalPath: string
   schema?: Record<string, unknown>
+  ogType?: string
+  ogImage?: string
 }) {
   const canonicalUrl = `${SITE_URL}${canonicalPath}`
+  const image = ogImage ?? DEFAULT_OG_IMAGE
   document.title = title
   upsertCanonical(canonicalUrl)
   upsertMetaByName("description", description)
   upsertMetaByName("robots", "index, follow")
-  upsertMetaByProperty("og:type", "website")
+  upsertMetaByProperty("og:type", ogType ?? "website")
   upsertMetaByProperty("og:site_name", SITE_NAME)
   upsertMetaByProperty("og:title", title)
   upsertMetaByProperty("og:description", description)
   upsertMetaByProperty("og:url", canonicalUrl)
-  upsertMetaByProperty("og:image", DEFAULT_OG_IMAGE)
+  upsertMetaByProperty("og:image", image)
   upsertMetaByName("twitter:card", "summary_large_image")
   upsertMetaByName("twitter:title", title)
   upsertMetaByName("twitter:description", description)
-  upsertMetaByName("twitter:image", DEFAULT_OG_IMAGE)
+  upsertMetaByName("twitter:image", image)
   upsertJsonLd(schema)
 }

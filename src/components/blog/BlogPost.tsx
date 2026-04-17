@@ -5,6 +5,7 @@ import { PortableText } from '@portabletext/react';
 
 import { getBlogService } from '../../services/BlogServiceFactory';
 import { urlFor } from '@/services/sanityClient';
+import { applySeoTags, SITE_URL } from '@/lib/seo';
 const blogService = getBlogService();
 
 
@@ -31,6 +32,34 @@ export function BlogPost() {
 
     fetchPost();
   }, [slug]);
+
+  useEffect(() => {
+    if (!post) return;
+    const imageUrl = post.mainImage ? urlFor(post.mainImage.asset).url() : undefined;
+    applySeoTags({
+      title: post.meta_title || post.title,
+      description: post.meta_description || post.seo?.description || '',
+      canonicalPath: `/blog/${post.slug?.current}`,
+      ogType: "article",
+      ogImage: imageUrl,
+      schema: {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "datePublished": post.publishedAt,
+        "dateModified": post.updatedAt || post._updatedAt,
+        "description": post.meta_description || post.seo?.description || '',
+        "url": `${SITE_URL}/blog/${post.slug?.current}`,
+        ...(imageUrl ? { "image": imageUrl } : {}),
+        ...(post.author ? { "author": { "@type": "Person", "name": post.author.name } } : {}),
+        "publisher": {
+          "@type": "Organization",
+          "name": "Amortization.in",
+          "logo": { "@type": "ImageObject", "url": `${SITE_URL}/favicon.png` },
+        },
+      },
+    });
+  }, [post]);
 
   if (loading) {
     return (
@@ -61,12 +90,6 @@ export function BlogPost() {
 
   return (
     <>
-
-        <title>{post.meta_title || post.title}</title>
-        <meta name="description" content={post.meta_description || 'Read our latest blog post.'} />
-
-        <link rel="canonical" href={`https://www.amortization.in/blog/${post.slug?.current}`} />
-                  
       <div className="container mx-auto px-4 py-6 pt-20 max-w-4xl">
         <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
         <header className="mb-8">

@@ -175,6 +175,28 @@ if (/^\d*$/.test(rawValue)) {
       description:
         "Calculate your loan EMI, monthly interest, and complete amortization schedule in seconds.",
       canonicalPath: "/",
+      schema: {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.amortization.in/#website",
+            "url": "https://www.amortization.in",
+            "name": "Amortization.in",
+            "description": "Free financial calculators for loan EMI, SIP, PPF, CAGR, bond yield and more.",
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://www.amortization.in/#organization",
+            "name": "Amortization.in",
+            "url": "https://www.amortization.in",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.amortization.in/favicon.png",
+            },
+          },
+        ],
+      },
     })
   }, [])
 
