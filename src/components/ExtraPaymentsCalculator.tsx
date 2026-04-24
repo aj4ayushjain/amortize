@@ -17,13 +17,24 @@ import {
 import { applySeoTags, SITE_URL } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 export function ExtraPaymentsCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [loanAmount, setLoanAmount] = useState<string>("")
-  const [interestRate, setInterestRate] = useState<string>("")
-  const [loanTenure, setLoanTenure] = useState<string>("")
-  const [extraPayment, setExtraPayment] = useState<string>("")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [loanAmount, setLoanAmount] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("amount") ?? ""
+  })
+  const [interestRate, setInterestRate] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("rate") ?? ""
+  })
+  const [loanTenure, setLoanTenure] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("tenure") ?? ""
+  })
+  const [extraPayment, setExtraPayment] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("extra") ?? ""
+  })
   const [errors, setErrors] = useState<{
     loanAmount?: string
     interestRate?: string
@@ -209,6 +220,13 @@ export function ExtraPaymentsCalculator() {
   }
 
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get("amount") && sp.get("rate") && sp.get("tenure") && sp.get("extra")) {
+      calculateExtraPayments()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "Loan Prepayment Calculator - Save Interest on Your Loan",
       description:
@@ -226,6 +244,13 @@ export function ExtraPaymentsCalculator() {
       },
     })
   }, [])
+
+  const shareUrl = results
+    ? `${window.location.origin}${window.location.pathname}?amount=${rawLoanAmount()}&rate=${interestRate}&tenure=${loanTenure}&extra=${rawExtraPayment()}&currency=${currency}`
+    : ""
+  const shareText = results
+    ? `Prepayment savings: ${formatDisplayNumber(parseFloat(rawLoanAmount()))} at ${interestRate}% with ${formatDisplayNumber(parseFloat(rawExtraPayment()))} extra/month — save ${formatDisplayNumber(results.interestSaved)}, ${results.monthsSaved} months sooner`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -335,7 +360,10 @@ export function ExtraPaymentsCalculator() {
 
           {results && (
             <CardContent className="border-t p-4 sm:p-6 space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center">Results</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold">Results</h2>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base">
                 <div className="p-3 bg-gray-50 rounded-md">
                   <p className="text-gray-600">Regular Monthly EMI</p>

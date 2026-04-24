@@ -15,14 +15,23 @@ import {
 import { applySeoTags, SITE_URL } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 const MAX_CAGR_YEARS = 200
 
 export function CAGRCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [beginningValue, setBeginningValue] = useState<string>("")
-  const [endingValue, setEndingValue] = useState<string>("")
-  const [years, setYears] = useState<string>("5")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [beginningValue, setBeginningValue] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("begin") ?? ""
+  })
+  const [endingValue, setEndingValue] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("end") ?? ""
+  })
+  const [years, setYears] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("years") ?? "5"
+  })
   const [errors, setErrors] = useState<{
     beginningValue?: string
     endingValue?: string
@@ -34,6 +43,13 @@ export function CAGRCalculator() {
   } | null>(null)
 
   const normalizeAmount = (val: string) => val.replace(/,/g, "").replace(/\s+/g, "").replace(/₽/g, "")
+
+  const formatDisplayNumber = (num: number) => {
+    const opt = CURRENCY_OPTIONS.find((o) => o.code === currency)
+    const locale = opt?.locale ?? "en-US"
+    const curr = opt?.code ?? "USD"
+    return Intl.NumberFormat(locale, { style: "currency", currency: curr }).format(num)
+  }
 
   const validateInputs = () => {
     const e: typeof errors = {}
@@ -107,6 +123,13 @@ export function CAGRCalculator() {
   }
 
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get("begin") && sp.get("end") && sp.get("years")) {
+      calculate()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "CAGR Calculator - Compound Annual Growth Rate",
       description:
@@ -123,6 +146,15 @@ export function CAGRCalculator() {
       },
     })
   }, [])
+
+  const rawBegin = normalizeAmount(beginningValue)
+  const rawEnd = normalizeAmount(endingValue)
+  const shareUrl = results
+    ? `${window.location.origin}${window.location.pathname}?begin=${rawBegin}&end=${rawEnd}&years=${years}&currency=${currency}`
+    : ""
+  const shareText = results
+    ? `CAGR: ${formatDisplayNumber(parseFloat(rawBegin))} → ${formatDisplayNumber(parseFloat(rawEnd))} in ${years} years = ${results.cagrPct.toFixed(2)}% CAGR`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -264,7 +296,10 @@ export function CAGRCalculator() {
 
           {results && (
             <CardContent className="border-t p-4 sm:p-6 space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center">Results</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold">Results</h2>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base">
                 <div className="p-3 bg-gray-50 rounded-md">
                   <p className="text-gray-600">CAGR</p>

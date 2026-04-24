@@ -15,6 +15,7 @@ import {
 import { applySeoTags, SITE_URL } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 /** Typical annual PPF deposit cap under Section 80C (India); soft warning only. */
 const PPF_ANNUAL_CAP_INR = 150_000
@@ -22,10 +23,18 @@ const PPF_ANNUAL_CAP_INR = 150_000
 const TENURE_OPTIONS = [15, 20, 25, 30, 35, 40, 45, 50] as const
 
 export function PPFCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [monthlyDeposit, setMonthlyDeposit] = useState<string>("")
-  const [annualRate, setAnnualRate] = useState<string>("7.1")
-  const [tenureYears, setTenureYears] = useState<string>("15")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [monthlyDeposit, setMonthlyDeposit] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("deposit") ?? ""
+  })
+  const [annualRate, setAnnualRate] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("rate") ?? "7.1"
+  })
+  const [tenureYears, setTenureYears] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("tenure") ?? "15"
+  })
   const [errors, setErrors] = useState<{
     monthlyDeposit?: string
     annualRate?: string
@@ -122,6 +131,13 @@ export function PPFCalculator() {
   }
 
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get("deposit") && sp.get("rate") && sp.get("tenure")) {
+      calculate()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "PPF Calculator - Public Provident Fund Maturity",
       description:
@@ -138,6 +154,14 @@ export function PPFCalculator() {
       },
     })
   }, [])
+
+  const rawDeposit = normalizeAmount(monthlyDeposit)
+  const shareUrl = results
+    ? `${window.location.origin}${window.location.pathname}?deposit=${rawDeposit}&rate=${annualRate}&tenure=${tenureYears}&currency=${currency}`
+    : ""
+  const shareText = results
+    ? `PPF estimate: ${formatDisplayNumber(parseFloat(rawDeposit))}/month at ${annualRate}% for ${tenureYears} years → maturity ${formatDisplayNumber(results.maturityValue)}`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -269,7 +293,10 @@ export function PPFCalculator() {
 
           {results && (
             <CardContent className="border-t p-4 sm:p-6 space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center">Results</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold">Results</h2>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               {results.overAnnualCap && (
                 <p className="text-amber-800 bg-amber-50 border border-amber-200 rounded-md p-3 text-sm text-center">
                   Monthly × 12 exceeds ₹1.5 lakh/year—PPF has an annual deposit cap; adjust for a realistic scenario.

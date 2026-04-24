@@ -16,7 +16,8 @@ import { SIPCalculator } from "@/components/SIPCalculator"
 import { CAGRCalculator } from "@/components/CAGRCalculator"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
 import { LoanTypeLinks } from "@/components/LoanTypeLinks"
-import { LoanCalculator } from "@/components/LoanCalculator"
+import { LoanCalculator, buildSchedule } from "@/components/LoanCalculator"
+import { ShareCalculator } from "@/components/ShareCalculator"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
 import { downloadAmortizationPDF } from "./services/schedulePDF"
@@ -34,10 +35,18 @@ import { applySeoTags } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 
 function AmortizationCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [loanAmount, setLoanAmount] = useState<string>("")
-  const [interestRate, setInterestRate] = useState<string>("")
-  const [loanTenure, setLoanTenure] = useState<string>("")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [loanAmount, setLoanAmount] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("amount") ?? ""
+  })
+  const [interestRate, setInterestRate] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("rate") ?? ""
+  })
+  const [loanTenure, setLoanTenure] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("tenure") ?? ""
+  })
   const [schedule, setSchedule] = useState<Array<{ month: number; emi: string; principal: string; interest: string; balance: string }>>([])
   
 
@@ -172,6 +181,13 @@ if (/^\d*$/.test(rawValue)) {
   }
 
   useEffect(() => {
+    if (loanAmount && interestRate && loanTenure) {
+      const rows = buildSchedule(loanAmount, interestRate, loanTenure, formatDisplayNumber)
+      setSchedule(rows)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "Free Amortization Calculator - Loan EMI & Interest Schedule",
       description:
@@ -201,6 +217,13 @@ if (/^\d*$/.test(rawValue)) {
       },
     })
   }, [])
+
+  const shareUrl = schedule.length > 0
+    ? `${window.location.origin}${window.location.pathname}?amount=${loanAmount}&rate=${interestRate}&tenure=${loanTenure}&currency=${currency}`
+    : ""
+  const shareText = schedule.length > 0
+    ? `Loan: ${formatDisplayNumber(parseFloat(loanAmount))} at ${interestRate}% for ${loanTenure} year${Number(loanTenure) !== 1 ? "s" : ""} — Monthly EMI: ${schedule[0].emi}`
+    : ""
 
   return (
   <>
@@ -315,20 +338,24 @@ if (/^\d*$/.test(rawValue)) {
           {schedule.length > 0 && (
             <CardContent className="border-t p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-semibold text-center mb-4">Amortization Schedule</h2>
-              <Button 
-                  type ="button" 
-                  variant="outline" 
-                  className="mb-4" 
-                  onClick={() => downloadAmortizationExcel(schedule)}>
-                Download Excel
-              </Button>
-              <Button
-                  type ="button" 
-                  variant="outline" 
-                  className="mb-4 ml-2" 
-                  onClick={() => downloadAmortizationPDF(schedule)}>
-                Download PDF
-              </Button>
+              <div className="flex items-center gap-2 mb-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => downloadAmortizationExcel(schedule)}
+                >
+                  Download Excel
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => downloadAmortizationPDF(schedule)}
+                >
+                  Download PDF
+                </Button>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
+            
               <div className="overflow-x-auto">
                 <div className="relative overflow-y-auto max-h-[calc(100vh-24rem)]">
                   <Table className="w-full border border-gray-200 text-sm sm:text-base">

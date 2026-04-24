@@ -15,14 +15,23 @@ import {
 import { applySeoTags, SITE_URL } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 const MONTHS_OPTIONS = [3, 4, 5, 6, 9, 12]
 
 export function EmergencyFundCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [monthlyExpenses, setMonthlyExpenses] = useState<string>("")
-  const [monthsToCover, setMonthsToCover] = useState<string>("6")
-  const [currentSavings, setCurrentSavings] = useState<string>("")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [monthlyExpenses, setMonthlyExpenses] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("expenses") ?? ""
+  })
+  const [monthsToCover, setMonthsToCover] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("months") ?? "6"
+  })
+  const [currentSavings, setCurrentSavings] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("savings") ?? ""
+  })
   const [errors, setErrors] = useState<{
     monthlyExpenses?: string
   }>({})
@@ -100,6 +109,13 @@ export function EmergencyFundCalculator() {
   }
 
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get("expenses")) {
+      calculate()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "Emergency Fund Calculator - How Much to Save",
       description:
@@ -116,6 +132,13 @@ export function EmergencyFundCalculator() {
       },
     })
   }, [])
+
+  const shareUrl = results
+    ? `${window.location.origin}${window.location.pathname}?expenses=${normalizeAmount(monthlyExpenses)}&months=${monthsToCover}&savings=${normalizeAmount(currentSavings)}&currency=${currency}`
+    : ""
+  const shareText = results
+    ? `Emergency fund target: ${formatDisplayNumber(results.targetAmount)} (${monthsToCover} months of expenses)`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -242,7 +265,10 @@ export function EmergencyFundCalculator() {
 
           {results && (
             <CardContent className="border-t p-4 sm:p-6 space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center">Results</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold">Results</h2>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base">
                 <div className="p-3 bg-gray-50 rounded-md">
                   <p className="text-gray-600">Target Emergency Fund</p>

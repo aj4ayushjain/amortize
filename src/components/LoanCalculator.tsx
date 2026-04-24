@@ -22,6 +22,7 @@ import {
 } from "@/lib/currency"
 import { applySeoTags } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 type ScheduleRow = {
   month: number
@@ -83,10 +84,18 @@ export function buildSchedule(
 }
 
 export function LoanCalculator({ seo, heading, subheading, excludeId, defaults }: LoanCalculatorProps) {
-  const [currency, setCurrency] = useState<string>(getDefaultCurrencyByLocale)
-  const [loanAmount, setLoanAmount] = useState<string>(defaults?.loanAmount ?? "")
-  const [interestRate, setInterestRate] = useState<string>(defaults?.interestRate ?? "")
-  const [loanTenure, setLoanTenure] = useState<string>(defaults?.loanTenure ?? "")
+  const [currency, setCurrency] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [loanAmount, setLoanAmount] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("amount") ?? defaults?.loanAmount ?? ""
+  })
+  const [interestRate, setInterestRate] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("rate") ?? defaults?.interestRate ?? ""
+  })
+  const [loanTenure, setLoanTenure] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("tenure") ?? defaults?.loanTenure ?? ""
+  })
   const [schedule, setSchedule] = useState<ScheduleRow[]>([])
   const [errors, setErrors] = useState<{
     loanAmount?: string
@@ -109,10 +118,9 @@ export function LoanCalculator({ seo, heading, subheading, excludeId, defaults }
     applySeoTags(seo)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-calculate when defaults are provided on mount
   useEffect(() => {
-    if (defaults?.loanAmount && defaults?.interestRate && defaults?.loanTenure) {
-      const rows = buildSchedule(defaults.loanAmount, defaults.interestRate, defaults.loanTenure, formatDisplayNumber)
+    if (loanAmount && interestRate && loanTenure) {
+      const rows = buildSchedule(loanAmount, interestRate, loanTenure, formatDisplayNumber)
       setSchedule(rows)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -201,6 +209,13 @@ export function LoanCalculator({ seo, heading, subheading, excludeId, defaults }
       setErrors({ ...errors, loanTenure: "" })
     }
   }
+
+  const shareUrl = schedule.length > 0
+    ? `${window.location.origin}${window.location.pathname}?amount=${loanAmount}&rate=${interestRate}&tenure=${loanTenure}&currency=${currency}`
+    : ""
+  const shareText = schedule.length > 0
+    ? `Loan: ${formatDisplayNumber(parseFloat(loanAmount))} at ${interestRate}% for ${loanTenure} year${Number(loanTenure) !== 1 ? "s" : ""} — Monthly EMI: ${schedule[0].emi}`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -322,22 +337,23 @@ export function LoanCalculator({ seo, heading, subheading, excludeId, defaults }
           {schedule.length > 0 && (
             <CardContent className="border-t p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-semibold text-center mb-4">Amortization Schedule</h2>
-              <Button
-                type="button"
-                variant="outline"
-                className="mb-4"
-                onClick={() => downloadAmortizationExcel(schedule)}
-              >
-                Download Excel
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="mb-4 ml-2"
-                onClick={() => downloadAmortizationPDF(schedule)}
-              >
-                Download PDF
-              </Button>
+              <div className="flex items-center gap-2 mb-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => downloadAmortizationExcel(schedule)}
+                >
+                  Download Excel
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => downloadAmortizationPDF(schedule)}
+                >
+                  Download PDF
+                </Button>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               <div className="overflow-x-auto">
                 <div className="relative overflow-y-auto max-h-[calc(100vh-24rem)]">
                   <Table className="w-full border border-gray-200 text-sm sm:text-base">

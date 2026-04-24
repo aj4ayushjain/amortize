@@ -15,6 +15,7 @@ import {
 import { applySeoTags, SITE_URL } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 const MAX_BOND_YEARS = 100
 
@@ -70,12 +71,24 @@ function solveYieldPerPeriod(
 }
 
 export function BondYieldCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [faceValue, setFaceValue] = useState<string>("")
-  const [couponRate, setCouponRate] = useState<string>("")
-  const [price, setPrice] = useState<string>("")
-  const [yearsToMaturity, setYearsToMaturity] = useState<string>("")
-  const [frequency, setFrequency] = useState<string>("2")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [faceValue, setFaceValue] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("face") ?? ""
+  })
+  const [couponRate, setCouponRate] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("coupon") ?? ""
+  })
+  const [price, setPrice] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("price") ?? ""
+  })
+  const [yearsToMaturity, setYearsToMaturity] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("maturity") ?? ""
+  })
+  const [frequency, setFrequency] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("freq") ?? "2"
+  })
   const [errors, setErrors] = useState<{
     faceValue?: string
     couponRate?: string
@@ -195,6 +208,13 @@ export function BondYieldCalculator() {
   }
 
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get("face") && sp.get("coupon") && sp.get("price") && sp.get("maturity")) {
+      calculate()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "Bond Yield Calculator - Current Yield & YTM",
       description:
@@ -211,6 +231,15 @@ export function BondYieldCalculator() {
       },
     })
   }, [])
+
+  const rawFace = normalizeAmount(faceValue)
+  const rawPrice = normalizeAmount(price)
+  const shareUrl = results
+    ? `${window.location.origin}${window.location.pathname}?face=${rawFace}&coupon=${couponRate}&price=${rawPrice}&maturity=${yearsToMaturity}&freq=${frequency}&currency=${currency}`
+    : ""
+  const shareText = results
+    ? `Bond yield: ${formatDisplayNumber(parseFloat(rawFace))} face, ${couponRate}% coupon at ${formatDisplayNumber(parseFloat(rawPrice))}, ${yearsToMaturity} years → YTM ${results.ytmNominalAnnualPct.toFixed(2)}%`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -392,7 +421,10 @@ export function BondYieldCalculator() {
 
           {results && (
             <CardContent className="border-t p-4 sm:p-6 space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center">Results</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold">Results</h2>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               <p className="text-xs text-gray-500 text-center">
                 Annual coupon: {formatDisplayNumber(results.annualCouponCash)}
               </p>

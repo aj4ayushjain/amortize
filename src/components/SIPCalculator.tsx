@@ -15,14 +15,23 @@ import {
 import { applySeoTags, SITE_URL } from "@/lib/seo"
 import { CALCULATOR_MAIN_CLASS } from "@/lib/layout"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { ShareCalculator } from "@/components/ShareCalculator"
 
 const MAX_SIP_ANNUAL_RETURN_PCT = 50
 
 export function SIPCalculator() {
-  const [currency, setCurrency] = React.useState<string>(getDefaultCurrencyByLocale)
-  const [monthlySip, setMonthlySip] = useState<string>("")
-  const [expectedAnnualReturn, setExpectedAnnualReturn] = useState<string>("12")
-  const [years, setYears] = useState<string>("10")
+  const [currency, setCurrency] = React.useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("currency") ?? getDefaultCurrencyByLocale()
+  })
+  const [monthlySip, setMonthlySip] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("sip") ?? ""
+  })
+  const [expectedAnnualReturn, setExpectedAnnualReturn] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("return") ?? "12"
+  })
+  const [years, setYears] = useState<string>(() => {
+    return new URLSearchParams(window.location.search).get("years") ?? "10"
+  })
   const [errors, setErrors] = useState<{
     monthlySip?: string
     expectedAnnualReturn?: string
@@ -116,6 +125,13 @@ export function SIPCalculator() {
   }
 
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get("sip") && sp.get("return") && sp.get("years")) {
+      calculate()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     applySeoTags({
       title: "SIP Calculator - Systematic Investment Plan Returns",
       description:
@@ -132,6 +148,14 @@ export function SIPCalculator() {
       },
     })
   }, [])
+
+  const rawSip = normalizeAmount(monthlySip)
+  const shareUrl = results
+    ? `${window.location.origin}${window.location.pathname}?sip=${rawSip}&return=${expectedAnnualReturn}&years=${years}&currency=${currency}`
+    : ""
+  const shareText = results
+    ? `SIP estimate: ${formatDisplayNumber(parseFloat(rawSip))}/month at ${expectedAnnualReturn}% for ${years} years → ${formatDisplayNumber(results.futureValue)}`
+    : ""
 
   return (
     <main className={CALCULATOR_MAIN_CLASS}>
@@ -263,7 +287,10 @@ export function SIPCalculator() {
 
           {results && (
             <CardContent className="border-t p-4 sm:p-6 space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center">Results</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold">Results</h2>
+                <ShareCalculator shareUrl={shareUrl} shareText={shareText} />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm sm:text-base">
                 <div className="p-3 bg-gray-50 rounded-md">
                   <p className="text-gray-600">Future value (est.)</p>
