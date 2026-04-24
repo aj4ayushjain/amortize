@@ -2,6 +2,10 @@ import { Link } from "react-router-dom"
 
 export type CalculatorPageId =
   | "amortization"
+  | "home-loan"
+  | "car-loan"
+  | "personal-loan"
+  | "bike-loan"
   | "loan-prepayment"
   | "emergency-fund"
   | "bond-yield"

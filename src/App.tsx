@@ -15,6 +15,8 @@ import { PPFCalculator } from "@/components/PPFCalculator"
 import { SIPCalculator } from "@/components/SIPCalculator"
 import { CAGRCalculator } from "@/components/CAGRCalculator"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
+import { LoanTypeLinks } from "@/components/LoanTypeLinks"
+import { LoanCalculator } from "@/components/LoanCalculator"
 import { Routes, Route } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
 import { downloadAmortizationPDF } from "./services/schedulePDF"
@@ -357,6 +359,8 @@ if (/^\d*$/.test(rawValue)) {
           )}
         </Card>
 
+        <LoanTypeLinks />
+
         <UseOurCalculators exclude="amortization" />
         
         <div className="mt-8">
@@ -366,6 +370,110 @@ if (/^\d*$/.test(rawValue)) {
     </main>
   </>
   );
+}
+
+function HomeLoanCalculator() {
+  return (
+    <LoanCalculator
+      heading="Home Loan Calculator"
+      subheading="Calculate your home loan EMI, total interest, and complete repayment schedule"
+      excludeId="home-loan"
+      defaults={{ loanAmount: "3000000", interestRate: "8.5", loanTenure: "20" }}
+      seo={{
+        title: "Home Loan Calculator - EMI, Interest & Amortization Schedule",
+        description:
+          "Calculate your home loan EMI, total interest payable, and month-by-month amortization schedule. Plan your housing loan repayment easily.",
+        canonicalPath: "/home-loan-calculator",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Home Loan Calculator",
+          url: "https://www.amortization.in/home-loan-calculator",
+          applicationCategory: "FinanceApplication",
+          description: "Free home loan EMI and amortization schedule calculator.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        },
+      }}
+    />
+  )
+}
+
+function CarLoanCalculator() {
+  return (
+    <LoanCalculator
+      heading="Car Loan Calculator"
+      subheading="Calculate your car loan EMI, total interest, and complete repayment schedule"
+      excludeId="car-loan"
+      defaults={{ loanAmount: "800000", interestRate: "9.5", loanTenure: "5" }}
+      seo={{
+        title: "Car Loan Calculator - EMI & Repayment Schedule",
+        description:
+          "Calculate your car loan EMI and total interest payable. Get a month-by-month repayment breakdown for any auto loan.",
+        canonicalPath: "/car-loan-calculator",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Car Loan Calculator",
+          url: "https://www.amortization.in/car-loan-calculator",
+          applicationCategory: "FinanceApplication",
+          description: "Free car loan EMI and amortization schedule calculator.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        },
+      }}
+    />
+  )
+}
+
+function PersonalLoanCalculator() {
+  return (
+    <LoanCalculator
+      heading="Personal Loan Calculator"
+      subheading="Calculate your personal loan EMI, total interest, and complete repayment schedule"
+      excludeId="personal-loan"
+      defaults={{ loanAmount: "500000", interestRate: "14", loanTenure: "3" }}
+      seo={{
+        title: "Personal Loan Calculator - EMI & Interest Schedule",
+        description:
+          "Calculate your personal loan EMI, total interest cost, and repayment schedule. Free calculator for any personal loan amount and tenure.",
+        canonicalPath: "/personal-loan-calculator",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Personal Loan Calculator",
+          url: "https://www.amortization.in/personal-loan-calculator",
+          applicationCategory: "FinanceApplication",
+          description: "Free personal loan EMI and amortization schedule calculator.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        },
+      }}
+    />
+  )
+}
+
+function BikeLoanCalculator() {
+  return (
+    <LoanCalculator
+      heading="Bike Loan Calculator"
+      subheading="Calculate your bike loan EMI, total interest, and complete repayment schedule"
+      excludeId="bike-loan"
+      defaults={{ loanAmount: "150000", interestRate: "10.5", loanTenure: "3" }}
+      seo={{
+        title: "Bike Loan Calculator - Two Wheeler Loan EMI & Interest",
+        description:
+          "Calculate your bike or two-wheeler loan EMI, total interest, and month-by-month repayment schedule. Free calculator for any two-wheeler loan.",
+        canonicalPath: "/bike-loan-calculator",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Bike Loan Calculator",
+          url: "https://www.amortization.in/bike-loan-calculator",
+          applicationCategory: "FinanceApplication",
+          description: "Free bike loan EMI and amortization schedule calculator.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        },
+      }}
+    />
+  )
 }
 
 function Blog() {
@@ -391,6 +499,10 @@ export default function App() {
     <div className="min-h-screen bg-background">
       <Routes>
         <Route path="/" element={<AmortizationCalculator />} />
+        <Route path="/home-loan-calculator" element={<HomeLoanCalculator />} />
+        <Route path="/car-loan-calculator" element={<CarLoanCalculator />} />
+        <Route path="/personal-loan-calculator" element={<PersonalLoanCalculator />} />
+        <Route path="/bike-loan-calculator" element={<BikeLoanCalculator />} />
         <Route path="/extra-payments-calculator" element={<ExtraPaymentsCalculator />} />
         <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculator />} />
         <Route path="/bond-yield-calculator" element={<BondYieldCalculator />} />
