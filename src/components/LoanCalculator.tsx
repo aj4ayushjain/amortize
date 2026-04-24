@@ -48,7 +48,7 @@ type LoanCalculatorProps = {
   }
 }
 
-function buildSchedule(
+export function buildSchedule(
   loanAmount: string,
   interestRate: string,
   loanTenure: string,

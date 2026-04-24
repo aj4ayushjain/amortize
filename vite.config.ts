@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
@@ -17,9 +17,14 @@ export default defineConfig({
     },
   },
   build: {
-    minify: 'terser', // 'terser' if you need better optimization
+    minify: 'terser',
     rollupOptions: {
       treeshake: true,
     },
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts'],
   },
 })
