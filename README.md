@@ -1,54 +1,137 @@
-# React + TypeScript + Vite
+# Amortization.in
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A free, open-source suite of financial calculators — loan EMI, SIP, PPF, CAGR, bond yield, and more. Built with React and TypeScript, deployed at [amortization.in](https://www.amortization.in).
 
-Currently, two official plugins are available:
+## Calculators
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Calculator | Route |
+|---|---|
+| Loan Amortization | `/` |
+| Home Loan | `/home-loan-calculator` |
+| Car Loan | `/car-loan-calculator` |
+| Personal Loan | `/personal-loan-calculator` |
+| Bike Loan | `/bike-loan-calculator` |
+| Extra Payments | `/extra-payments-calculator` |
+| Emergency Fund | `/emergency-fund-calculator` |
+| SIP | `/sip-calculator` |
+| PPF | `/ppf-calculator` |
+| CAGR | `/cagr-calculator` |
+| Bond Yield | `/bond-yield-calculator` |
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 19** + **TypeScript**
+- **Vite** — dev server and bundler
+- **Tailwind CSS v4** — styling
+- **shadcn/ui** (Radix UI) — components
+- **React Router v7** — client-side routing
+- **ExcelJS** + **jsPDF** — export amortization schedules
+- **Vitest** — unit tests
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Prerequisites
+
+Make sure you have the following installed before you begin:
+
+- [Node.js](https://nodejs.org/) v18 or higher
+- npm (comes with Node.js)
+
+To check your versions:
+
+```bash
+node -v
+npm -v
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**1. Clone the repository**
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+git clone https://github.com/your-username/amortize.git
+cd amortize
 ```
+
+**2. Install dependencies**
+
+```bash
+npm install
+```
+
+**3. Start the development server**
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser. The page reloads automatically as you edit files.
+
+## Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start local dev server at `localhost:5173` |
+| `npm run build` | Type-check and build for production (output in `dist/`) |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint across the project |
+| `npm test` | Run all unit tests once |
+| `npm run test:watch` | Run tests in watch mode (re-runs on file save) |
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── ui/              # Reusable UI primitives (Button, Input, Card…)
+│   ├── LoanCalculator.tsx
+│   ├── SIPCalculator.tsx
+│   └── ...              # One file per calculator
+├── lib/
+│   ├── currency.ts      # Currency options, formatting, locale detection
+│   ├── seo.ts           # SEO tag helpers
+│   └── utils.ts
+├── services/
+│   ├── scheduleExcel.ts # Export amortization schedule to .xlsx
+│   └── schedulePDF.ts   # Export amortization schedule to .pdf
+├── test/
+│   └── loanCalculator.test.ts
+└── App.tsx              # Route definitions
+```
+
+## Running Tests
+
+```bash
+npm test
+```
+
+Tests are written with [Vitest](https://vitest.dev/) and live in `src/test/`. To run in watch mode while developing:
+
+```bash
+npm run test:watch
+```
+
+## Building for Production
+
+```bash
+npm run build
+```
+
+The compiled output lands in the `dist/` folder. You can preview it locally before deploying:
+
+```bash
+npm run preview
+```
+
+## Deployment
+
+The project is configured for [Vercel](https://vercel.com/). Connect your GitHub repository to Vercel and it will deploy automatically on every push to `master`. The `vercel.json` at the root handles SPA routing rewrites.
+
+## Contributing
+
+1. Fork the repository and create a new branch from `master`
+2. Make your changes
+3. Run `npm test` and `npm run lint` to make sure nothing is broken
+4. Open a pull request with a clear description of what you changed and why
+
+## License
+
+MIT
