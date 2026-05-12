@@ -29,6 +29,7 @@ export function getDefaultCurrencyByLocale(): string {
   if (timeZone === "Asia/Tokyo" || locales.includes("ja-JP")) return "JPY"
   if (timeZone.startsWith("Europe/Moscow") || locales.includes("ru-RU")) return "RUB"
   if (timeZone === "Europe/Bucharest" || locales.includes("ro-RO")) return "RON"
+  if (timeZone === "Europe/Brussels" || locales.some((l) => ["fr-BE", "nl-BE"].includes(l))) return "EUR"
   if (timeZone === "Europe/Paris" || timeZone === "Europe/Spain" || timeZone === "Europe/Berlin" || timeZone === "Europe/Lisbon" || locales.some((l) => ["fr-FR", "en-ES", "es-ES", "pt-PT"].includes(l))) return "EUR"
   if (timeZone === "Australia/Sydney" || locales.includes("en-AU")) return "AUD"
   if (timeZone.startsWith("Canada/") || locales.includes("en-CA")) return "CAD"
