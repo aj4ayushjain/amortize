@@ -21,6 +21,56 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
   { code: "HUF", symbol: "Ft", name: "Hungarian Forint", locale: "hu-HU" },
 ]
 
+// All IANA timezones for Eurozone countries (Austria, Belgium, Croatia, Cyprus,
+// Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania,
+// Luxembourg, Malta, Netherlands, Portugal, Slovakia, Slovenia, Spain)
+const EUROZONE_TIMEZONES = new Set([
+  "Europe/Vienna",                         // Austria
+  "Europe/Brussels",                       // Belgium
+  "Europe/Zagreb",                         // Croatia
+  "Asia/Nicosia", "Asia/Famagusta",        // Cyprus
+  "Europe/Tallinn",                        // Estonia
+  "Europe/Helsinki", "Europe/Mariehamn",   // Finland
+  "Europe/Paris",                          // France
+  "Europe/Berlin", "Europe/Busingen",      // Germany
+  "Europe/Athens",                         // Greece
+  "Europe/Dublin",                         // Ireland
+  "Europe/Rome",                           // Italy
+  "Europe/Riga",                           // Latvia
+  "Europe/Vilnius",                        // Lithuania
+  "Europe/Luxembourg",                     // Luxembourg
+  "Europe/Malta",                          // Malta
+  "Europe/Amsterdam",                      // Netherlands
+  "Europe/Lisbon", "Atlantic/Azores", "Atlantic/Madeira",  // Portugal
+  "Europe/Bratislava",                     // Slovakia
+  "Europe/Ljubljana",                      // Slovenia
+  "Europe/Madrid", "Atlantic/Canary",      // Spain
+])
+
+// Browser locale codes for Eurozone countries
+const EUROZONE_LOCALES = new Set([
+  "de-AT",                                 // Austria
+  "fr-BE", "nl-BE",                        // Belgium
+  "hr-HR",                                 // Croatia
+  "el-CY",                                 // Cyprus
+  "et-EE",                                 // Estonia
+  "fi-FI", "sv-FI",                        // Finland
+  "fr-FR",                                 // France
+  "de-DE",                                 // Germany
+  "el-GR",                                 // Greece
+  "en-IE", "ga-IE",                        // Ireland
+  "it-IT",                                 // Italy
+  "lv-LV",                                 // Latvia
+  "lt-LT",                                 // Lithuania
+  "fr-LU", "de-LU", "lb-LU",              // Luxembourg
+  "mt-MT", "en-MT",                        // Malta
+  "nl-NL",                                 // Netherlands
+  "pt-PT",                                 // Portugal
+  "sk-SK",                                 // Slovakia
+  "sl-SI",                                 // Slovenia
+  "es-ES", "ca-ES", "eu-ES", "gl-ES",     // Spain
+])
+
 export function getDefaultCurrencyByLocale(): string {
   const locales = [...(navigator.languages || [navigator.language])]
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""
@@ -29,8 +79,7 @@ export function getDefaultCurrencyByLocale(): string {
   if (timeZone === "Asia/Tokyo" || locales.includes("ja-JP")) return "JPY"
   if (timeZone.startsWith("Europe/Moscow") || locales.includes("ru-RU")) return "RUB"
   if (timeZone === "Europe/Bucharest" || locales.includes("ro-RO")) return "RON"
-  if (timeZone === "Europe/Brussels" || locales.some((l) => ["fr-BE", "nl-BE"].includes(l))) return "EUR"
-  if (timeZone === "Europe/Paris" || timeZone === "Europe/Spain" || timeZone === "Europe/Berlin" || timeZone === "Europe/Lisbon" || locales.some((l) => ["fr-FR", "en-ES", "es-ES", "pt-PT"].includes(l))) return "EUR"
+  if (EUROZONE_TIMEZONES.has(timeZone) || locales.some((l) => EUROZONE_LOCALES.has(l))) return "EUR"
   if (timeZone === "Australia/Sydney" || locales.includes("en-AU")) return "AUD"
   if (timeZone.startsWith("Canada/") || locales.includes("en-CA")) return "CAD"
   if (timeZone === "Asia/Singapore" || locales.includes("en-SG")) return "SGD"
