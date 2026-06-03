@@ -19,6 +19,7 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
   { code: "AZN", symbol: "₼", name: "Azerbaijani Manat", locale: "az-AZ" },
   { code: "BBD", symbol: "Bds$", name: "Barbadian Dollar", locale: "en-BB" },
   { code: "HUF", symbol: "Ft", name: "Hungarian Forint", locale: "hu-HU" },
+  { code: "RWF", symbol: "Fr", name: "Rwandan Franc", locale: "rw-RW" },
 ]
 
 // All IANA timezones for Eurozone countries (Austria, Belgium, Croatia, Cyprus,
@@ -90,6 +91,7 @@ export function getDefaultCurrencyByLocale(): string {
   if (timeZone === "Africa/Kampala" || locales.includes("en-UG")) return "UGX"
   if (timeZone === "Asia/Baku" || locales.includes("az-AZ")) return "AZN"
   if (timeZone === "America/Barbados" || locales.includes("en-BB")) return "BBD"
+  if (timeZone === "Africa/Kigali" || locales.includes("rw-RW")) return "RWF"
   if (timeZone === "Europe/London") return "GBP"
   if (timeZone.startsWith("America/")) return "USD"
   return "INR"
