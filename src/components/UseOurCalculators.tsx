@@ -12,6 +12,7 @@ export type CalculatorPageId =
   | "ppf"
   | "sip"
   | "cagr"
+  | "credit-card-validator"
 
 type CalculatorLink = {
   id: CalculatorPageId
@@ -70,6 +71,13 @@ const CALCULATORS: CalculatorLink[] = [
     title: "CAGR Calculator",
     description: "Compound annual growth rate from beginning value, ending value, and years.",
     cta: "Use CAGR Calculator",
+  },
+  {
+    id: "credit-card-validator",
+    path: "/credit-card-validator",
+    title: "Credit Card Number Validator",
+    description: "Check card number format with the Luhn algorithm—validation only, not a live card check.",
+    cta: "Use Card Validator",
   },
 ]
 

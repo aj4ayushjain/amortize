@@ -14,11 +14,12 @@ import { BondYieldCalculator } from "@/components/BondYieldCalculator"
 import { PPFCalculator } from "@/components/PPFCalculator"
 import { SIPCalculator } from "@/components/SIPCalculator"
 import { CAGRCalculator } from "@/components/CAGRCalculator"
+import { CreditCardValidator } from "@/components/CreditCardValidator"
 import { UseOurCalculators } from "@/components/UseOurCalculators"
 import { LoanTypeLinks } from "@/components/LoanTypeLinks"
 import { LoanCalculator, buildSchedule } from "@/components/LoanCalculator"
 import { ShareCalculator } from "@/components/ShareCalculator"
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import { downloadAmortizationExcel } from "@/services/scheduleExcel"
 import { downloadAmortizationPDF } from "./services/schedulePDF"
 import { SelectGroup } from "@radix-ui/react-select"
@@ -536,6 +537,8 @@ export default function App() {
         <Route path="/ppf-calculator" element={<PPFCalculator />} />
         <Route path="/sip-calculator" element={<SIPCalculator />} />
         <Route path="/cagr-calculator" element={<CAGRCalculator />} />
+        <Route path="/credit-card-validator" element={<CreditCardValidator />} />
+        <Route path="/credit-card-luhn-checker" element={<Navigate to="/credit-card-validator" replace />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
       </Routes>
